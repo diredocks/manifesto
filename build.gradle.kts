@@ -67,3 +67,18 @@ tasks.withType<KotlinCompile> {
 tasks.withType<Test> {
     useJUnitPlatform()
 }
+
+tasks.test {
+    useJUnitPlatform {
+        excludeTags("e2e")
+    }
+}
+
+tasks.register<Test>("e2eTest") {
+    useJUnitPlatform {
+        includeTags("e2e")
+    }
+    systemProperty("spring.profiles.active", "e2e")
+    mustRunAfter(tasks.test)
+}
+
