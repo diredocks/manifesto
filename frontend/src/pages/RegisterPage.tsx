@@ -93,7 +93,7 @@ export function RegisterPage() {
       </form>
       <p className="text-xs mt-3">
         Already have an account?{' '}
-        <Link to="/login" className="text-primary">
+        <Link to="/login" className="text-primary no-underline hover:underline">
           Login
         </Link>
       </p>

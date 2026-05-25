@@ -85,7 +85,7 @@ export function PostDetailPage() {
               href={post.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-link visited:text-link-visited"
+              className="text-link visited:text-link-visited no-underline hover:underline"
             >
               {post.title}
             </a>
@@ -96,7 +96,7 @@ export function PostDetailPage() {
         </div>
         <div className="text-xs text-gray-500 mb-2">
           {post.score} points by{' '}
-          <Link to={`/user/${post.authorUsername}`} className="text-gray-500 hover:underline">
+          <Link to={`/user/${post.authorUsername}`} className="text-gray-500 no-underline hover:underline">
             {post.authorUsername}
           </Link>{' '}
           {timeAgo(post.createdAt)}

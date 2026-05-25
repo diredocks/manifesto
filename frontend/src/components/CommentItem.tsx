@@ -35,7 +35,7 @@ export function CommentItem({ comment, currentUsername, isMod, onDelete }: Comme
   return (
     <div className="py-1" style={{ paddingLeft: `${comment.depth * 16}px` }}>
       <div className="text-xs text-gray-500 mb-1">
-        <Link to={`/user/${comment.authorUsername}`} className="text-gray-500 hover:underline">
+        <Link to={`/user/${comment.authorUsername}`} className="text-gray-500 no-underline hover:underline">
           {comment.authorUsername}
         </Link>{' '}
         {timeAgo(comment.createdAt)}

@@ -17,7 +17,7 @@ export function CommentForm({ postId, parentId, onSubmit, isPending, onCancel }:
   if (!token) {
     return (
       <p className="text-xs text-gray-500 py-2">
-        <Link to="/login" className="text-primary">Login</Link> to comment.
+        <Link to="/login" className="text-primary no-underline hover:underline">Login</Link> to comment.
       </p>
     )
   }

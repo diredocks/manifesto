@@ -26,22 +26,22 @@ export function Header() {
         Manifesto
       </Link>
       <nav className="flex gap-2">
-        <Link to="/new" className="text-white visited:text-white">new</Link>
+        <Link to="/new" className="text-white visited:text-white no-underline">new</Link>
         <span className="text-white/70">|</span>
-        <Link to="/ask" className="text-white visited:text-white">ask</Link>
+        <Link to="/ask" className="text-white visited:text-white no-underline">ask</Link>
         <span className="text-white/70">|</span>
-        <Link to="/submit" className="text-white visited:text-white">submit</Link>
+        <Link to="/submit" className="text-white visited:text-white no-underline">submit</Link>
       </nav>
       <div className="ml-auto flex gap-2 items-center">
         {loggedIn ? (
           <>
             {isMod && (
               <>
-                <Link to="/mod" className="text-white visited:text-white">mod</Link>
+                <Link to="/mod" className="text-white visited:text-white no-underline">mod</Link>
                 <span className="text-white/70">|</span>
               </>
             )}
-            <Link to={`/user/${currentUser?.username}`} className="text-white visited:text-white">
+            <Link to={`/user/${currentUser?.username}`} className="text-white visited:text-white no-underline">
               {currentUser?.username}
             </Link>
             <span className="text-white/70">|</span>
@@ -50,7 +50,7 @@ export function Header() {
             </button>
           </>
         ) : (
-          <Link to="/login" className="text-white visited:text-white">login</Link>
+          <Link to="/login" className="text-white visited:text-white no-underline">login</Link>
         )}
       </div>
     </header>

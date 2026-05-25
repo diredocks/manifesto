@@ -48,12 +48,12 @@ export function PostItem({ post, rank }: PostItemProps) {
               href={post.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-link visited:text-link-visited"
+              className="text-link visited:text-link-visited no-underline hover:underline"
             >
               {post.title}
             </a>
           ) : (
-            <Link to={`/item/${post.id}`} className="text-link visited:text-link-visited">
+            <Link to={`/item/${post.id}`} className="text-link visited:text-link-visited no-underline hover:underline">
               {post.title}
             </Link>
           )}
@@ -61,12 +61,12 @@ export function PostItem({ post, rank }: PostItemProps) {
         </div>
         <div className="text-xs text-gray-500">
           {post.score} points by{' '}
-          <Link to={`/user/${post.authorUsername}`} className="text-gray-500 hover:underline">
+          <Link to={`/user/${post.authorUsername}`} className="text-gray-500 no-underline hover:underline">
             {post.authorUsername}
           </Link>{' '}
           {timeAgo(post.createdAt)}{' '}
           |{' '}
-          <Link to={`/item/${post.id}`} className="text-gray-500 hover:underline">
+          <Link to={`/item/${post.id}`} className="text-gray-500 no-underline hover:underline">
             {post.commentCount > 0 ? `${post.commentCount} comments` : 'discuss'}
           </Link>
         </div>

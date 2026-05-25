@@ -74,7 +74,7 @@ export function LoginPage() {
       </form>
       <p className="text-xs mt-3">
         Don&apos;t have an account?{' '}
-        <Link to="/register" className="text-primary">
+        <Link to="/register" className="text-primary no-underline hover:underline">
           Register
         </Link>
       </p>
