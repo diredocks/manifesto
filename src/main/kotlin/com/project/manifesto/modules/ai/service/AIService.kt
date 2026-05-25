@@ -6,6 +6,7 @@ import org.springframework.ai.chat.model.ChatModel
 import org.springframework.ai.chat.prompt.Prompt
 import org.springframework.ai.chat.messages.UserMessage
 import org.springframework.stereotype.Service
+import java.net.InetSocketAddress
 import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
@@ -18,10 +19,27 @@ class AIService(
 ) {
 
     private val logger = LoggerFactory.getLogger(javaClass)
-    private val httpClient = HttpClient.newBuilder()
-        .connectTimeout(Duration.ofSeconds(10))
-        .followRedirects(HttpClient.Redirect.NORMAL)
-        .build()
+    private val httpClient: HttpClient by lazy {
+        val builder = HttpClient.newBuilder()
+            .connectTimeout(Duration.ofSeconds(10))
+            .followRedirects(HttpClient.Redirect.NORMAL)
+
+        val proxyUrl = System.getProperty("http.proxyHost")?.let { host ->
+            val port = System.getProperty("http.proxyPort", "80").toIntOrNull() ?: 80
+            "http://$host:$port"
+        } ?: System.getenv("HTTP_PROXY")
+
+        if (proxyUrl != null) {
+            try {
+                val uri = URI(proxyUrl)
+                builder.proxy(java.net.ProxySelector.of(
+                    java.net.InetSocketAddress(uri.host, uri.port)
+                ))
+            } catch (_: Exception) {}
+        }
+
+        builder.build()
+    }
 
     fun summarizeUrl(url: String): String? {
         return try {

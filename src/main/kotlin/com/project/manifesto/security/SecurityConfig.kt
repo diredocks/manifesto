@@ -59,6 +59,7 @@ class SecurityConfig(
                     .requestMatchers(HttpMethod.GET, "/api/v1/posts/**").permitAll()
                     .requestMatchers(HttpMethod.GET, "/api/v1/comments/**").permitAll()
                     .requestMatchers(HttpMethod.GET, "/api/v1/ranking/**").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/v1/tags/**").permitAll()
                     .anyRequest().authenticated()
             }
             .authenticationProvider(authenticationProvider())
