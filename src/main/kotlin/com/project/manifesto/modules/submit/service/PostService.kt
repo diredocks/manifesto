@@ -57,25 +57,25 @@ class PostService(
     @Transactional(readOnly = true)
     fun listNewPosts(pageable: Pageable): Page<PostResponse> {
         return postRepository.findByDeletedFalseOrderByCreatedAtDesc(pageable)
-            .map { toResponse(it) }
+            .map { toPostResponse(it) }
     }
 
     @Transactional(readOnly = true)
     fun listTopPosts(pageable: Pageable): Page<PostResponse> {
         return postRepository.findByDeletedFalseOrderByScoreDesc(pageable)
-            .map { toResponse(it) }
+            .map { toPostResponse(it) }
     }
 
     @Transactional(readOnly = true)
     fun listHotPosts(pageable: Pageable): Page<PostResponse> {
         return postRepository.findByDeletedFalseOrderByHotScoreDesc(pageable)
-            .map { toResponse(it) }
+            .map { toPostResponse(it) }
     }
 
     @Transactional(readOnly = true)
     fun listPostsByUser(userId: Long, pageable: Pageable): Page<PostResponse> {
         return postRepository.findByAuthorIdAndDeletedFalseOrderByCreatedAtDesc(userId, pageable)
-            .map { toResponse(it) }
+            .map { toPostResponse(it) }
     }
 
     @Transactional
@@ -92,7 +92,7 @@ class PostService(
         return 1.0 / Math.pow(2.0, 1.5)
     }
 
-    private fun toResponse(post: Post): PostResponse {
+    fun toPostResponse(post: Post): PostResponse {
         val author = userRepository.findById(post.authorId)
             .orElse(null)
         return PostResponse(
