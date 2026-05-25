@@ -27,7 +27,9 @@ import type {
   ApiResponseBoolean,
   ApiResponseCommentResponse,
   ApiResponseListCommentResponse,
-  CreateCommentRequest
+  ApiResponsePageUserCommentResponse,
+  CreateCommentRequest,
+  GetCommentsByUserParams
 } from '.././model';
 
 import { customInstance } from '../../client/axios-client';
@@ -193,6 +195,106 @@ export const useCreateComment = <TError = unknown,
       return useMutation(mutationOptions, queryClient);
     }
     /**
+ * @summary Get comments by username
+ */
+export const getCommentsByUser = (
+    username: string,
+    params?: GetCommentsByUserParams,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<ApiResponsePageUserCommentResponse>(
+      {url: `/api/v1/comments/user/${username}`, method: 'GET',
+        params, signal
+    },
+      );
+    }
+  
+
+
+
+export const getGetCommentsByUserQueryKey = (username?: string,
+    params?: GetCommentsByUserParams,) => {
+    return [
+    `/api/v1/comments/user/${username}`, ...(params ? [params]: [])
+    ] as const;
+    }
+
+    
+export const getGetCommentsByUserQueryOptions = <TData = Awaited<ReturnType<typeof getCommentsByUser>>, TError = unknown>(username: string,
+    params?: GetCommentsByUserParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCommentsByUser>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetCommentsByUserQueryKey(username,params);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getCommentsByUser>>> = ({ signal }) => getCommentsByUser(username,params, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(username), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getCommentsByUser>>, TError, TData> & { queryKey: DataTag<QueryKey, TData> }
+}
+
+export type GetCommentsByUserQueryResult = NonNullable<Awaited<ReturnType<typeof getCommentsByUser>>>
+export type GetCommentsByUserQueryError = unknown
+
+
+export function useGetCommentsByUser<TData = Awaited<ReturnType<typeof getCommentsByUser>>, TError = unknown>(
+ username: string,
+    params: undefined |  GetCommentsByUserParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCommentsByUser>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getCommentsByUser>>,
+          TError,
+          Awaited<ReturnType<typeof getCommentsByUser>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> }
+export function useGetCommentsByUser<TData = Awaited<ReturnType<typeof getCommentsByUser>>, TError = unknown>(
+ username: string,
+    params?: GetCommentsByUserParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCommentsByUser>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getCommentsByUser>>,
+          TError,
+          Awaited<ReturnType<typeof getCommentsByUser>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> }
+export function useGetCommentsByUser<TData = Awaited<ReturnType<typeof getCommentsByUser>>, TError = unknown>(
+ username: string,
+    params?: GetCommentsByUserParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCommentsByUser>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> }
+/**
+ * @summary Get comments by username
+ */
+
+export function useGetCommentsByUser<TData = Awaited<ReturnType<typeof getCommentsByUser>>, TError = unknown>(
+ username: string,
+    params?: GetCommentsByUserParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getCommentsByUser>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> } {
+
+  const queryOptions = getGetCommentsByUserQueryOptions(username,params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+/**
  * @summary Delete own comment
  */
 export const deleteComment1 = (

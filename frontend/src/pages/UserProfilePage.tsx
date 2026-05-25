@@ -1,6 +1,5 @@
-import { useSearchParams, useParams } from 'react-router-dom'
-import { useUserPosts } from '@/features/profile/hooks'
-import { PostList } from '@/components/PostList'
+import { useParams, Link } from 'react-router-dom'
+import { useUserProfile } from '@/features/profile/hooks'
 
 export function UserProfilePage() {
   const { username } = useParams<{ username: string }>()
@@ -11,32 +10,37 @@ export function UserProfilePage() {
 
   return (
     <div className="py-2">
-      <h1 className="text-base font-bold mb-1">{username}</h1>
-      <UserPosts username={username} />
+      <UserInfo username={username} />
+      <div className="mt-3 flex gap-4 text-sm">
+        <Link to={`/user/${username}/posts`} className="text-[#000] hover:underline">posts</Link>
+        <Link to={`/user/${username}/comments`} className="text-[#000] hover:underline">comments</Link>
+      </div>
     </div>
   )
 }
 
-function UserPosts({ username }: { username: string }) {
-  const [searchParams] = useSearchParams()
-  const p = Number(searchParams.get('p') || '1')
-  const apiPage = p - 1
+function UserInfo({ username }: { username: string }) {
+  const { data, isLoading, isError } = useUserProfile(username)
 
-  const { data, isLoading, isError, error } = useUserPosts(username, apiPage)
-  const posts = data?.data?.content
-  const hasMore = posts && posts.length >= 20
-  const moreUrl = hasMore ? `/user/${username}?p=${p + 1}` : undefined
+  if (isLoading) {
+    return <div className="text-sm text-[#828282]">loading...</div>
+  }
+
+  if (isError || !data?.data) {
+    return <div className="text-sm text-red-600">User not found.</div>
+  }
+
+  const profile = data.data
+  const joined = new Date(profile.createdAt).toLocaleDateString()
 
   return (
-    <div className="mt-2">
-      <h2 className="text-sm font-bold mb-2 border-t border-border pt-2">Posts</h2>
-      <PostList
-        posts={posts}
-        isLoading={isLoading}
-        isError={isError}
-        error={error}
-        moreUrl={moreUrl}
-      />
+    <div>
+      <h1 className="text-base font-bold">{profile.username}</h1>
+      <div className="text-sm text-[#828282] mt-1">
+        <span>karma: {profile.karma}</span>
+        <span className="mx-2">|</span>
+        <span>joined: {joined}</span>
+      </div>
     </div>
   )
 }

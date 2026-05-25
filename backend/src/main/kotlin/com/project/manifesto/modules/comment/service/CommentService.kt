@@ -2,6 +2,7 @@ package com.project.manifesto.modules.comment.service
 
 import com.project.manifesto.modules.comment.dto.CommentResponse
 import com.project.manifesto.modules.comment.dto.CreateCommentRequest
+import com.project.manifesto.modules.comment.dto.UserCommentResponse
 import com.project.manifesto.modules.comment.entity.Comment
 import com.project.manifesto.modules.comment.repository.CommentRepository
 import com.project.manifesto.modules.notification.entity.NotificationType
@@ -9,6 +10,8 @@ import com.project.manifesto.modules.notification.service.NotificationService
 import com.project.manifesto.modules.submit.repository.PostRepository
 import com.project.manifesto.modules.user.repository.UserRepository
 import jakarta.persistence.EntityNotFoundException
+import org.springframework.data.domain.Page
+import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -89,6 +92,22 @@ class CommentService(
             .orElseThrow { EntityNotFoundException("Comment not found: $commentId") }
         softDeleteComment(comment)
         return true
+    }
+
+    @Transactional(readOnly = true)
+    fun listCommentsByUser(userId: Long, pageable: Pageable): Page<UserCommentResponse> {
+        return commentRepository.findByAuthorIdAndDeletedFalseOrderByCreatedAtDesc(userId, pageable)
+            .map { comment ->
+                val post = postRepository.findById(comment.postId).orElse(null)
+                UserCommentResponse(
+                    id = comment.id,
+                    postId = comment.postId,
+                    postTitle = post?.title ?: "[deleted]",
+                    content = comment.content,
+                    score = comment.score,
+                    createdAt = comment.createdAt
+                )
+            }
     }
 
     private fun softDeleteComment(comment: Comment) {

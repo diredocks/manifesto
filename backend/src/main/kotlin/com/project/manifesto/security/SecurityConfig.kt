@@ -56,6 +56,7 @@ class SecurityConfig(
                 auth
                     .requestMatchers("/api/v1/auth/**").permitAll()
                     .requestMatchers("/swagger-ui/**", "/api-docs/**", "/swagger-ui.html").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/v1/users/**").permitAll()
                     .requestMatchers(HttpMethod.GET, "/api/v1/posts/**").permitAll()
                     .requestMatchers(HttpMethod.GET, "/api/v1/comments/**").permitAll()
                     .requestMatchers(HttpMethod.GET, "/api/v1/ranking/**").permitAll()

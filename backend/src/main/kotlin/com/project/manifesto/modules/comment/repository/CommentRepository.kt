@@ -21,4 +21,6 @@ interface CommentRepository : JpaRepository<Comment, Long> {
     fun countByPostIdAndDeletedFalse(postId: Long): Int
 
     fun findByPostIdAndDeletedFalse(postId: Long, pageable: Pageable): Page<Comment>
+
+    fun findByAuthorIdAndDeletedFalseOrderByCreatedAtDesc(authorId: Long, pageable: Pageable): Page<Comment>
 }
