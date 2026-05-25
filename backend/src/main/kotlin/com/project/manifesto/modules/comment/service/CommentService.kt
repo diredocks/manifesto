@@ -5,11 +5,10 @@ import com.project.manifesto.modules.comment.dto.CreateCommentRequest
 import com.project.manifesto.modules.comment.entity.Comment
 import com.project.manifesto.modules.comment.repository.CommentRepository
 import com.project.manifesto.modules.notification.entity.NotificationType
-import com.project.manifesto.modules.notification.event.NotificationEvent
+import com.project.manifesto.modules.notification.service.NotificationService
 import com.project.manifesto.modules.submit.repository.PostRepository
 import com.project.manifesto.modules.user.repository.UserRepository
 import jakarta.persistence.EntityNotFoundException
-import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -18,7 +17,7 @@ class CommentService(
     private val commentRepository: CommentRepository,
     private val postRepository: PostRepository,
     private val userRepository: UserRepository,
-    private val publisher: ApplicationEventPublisher
+    private val notificationService: NotificationService
 ) {
 
     @Transactional
@@ -37,14 +36,12 @@ class CommentService(
             }
             depth = parentComment.depth + 1
 
-            publisher.publishEvent(
-                NotificationEvent(
-                    receiverId = parentComment.authorId,
-                    type = NotificationType.COMMENT_REPLY,
-                    content = "Someone replied to your comment",
-                    relatedPostId = postId,
-                    relatedCommentId = request.parentId
-                )
+            notificationService.createNotification(
+                receiverId = parentComment.authorId,
+                type = NotificationType.COMMENT_REPLY,
+                content = "Someone replied to your comment",
+                relatedPostId = postId,
+                relatedCommentId = request.parentId
             )
         }
 

@@ -1,4 +1,4 @@
-.PHONY: init clean-db clean-redis clean-mq clean run-backend run-frontend
+.PHONY: init clean-db clean run-backend run-frontend
 
 PG_HOST ?= localhost
 PG_PORT ?= 5432
@@ -8,9 +8,6 @@ PG_DB   ?= manifesto
 PG_E2E  ?= manifesto_e2e
 PGPASSWORD=$(PG_PASS)
 export PGPASSWORD
-
-REDIS_HOST ?= localhost
-REDIS_PORT ?= 6379
 
 init:
 	@echo "Initializing databases..."
@@ -27,18 +24,7 @@ clean-db:
 	done
 	@echo "Databases recreated."
 
-clean-redis:
-	@echo "Flushing Redis..."
-	redis-cli -h $(REDIS_HOST) -p $(REDIS_PORT) FLUSHALL
-
-clean-mq:
-	@echo "Resetting RabbitMQ..."
-	sudo rabbitmqctl stop_app
-	sudo rabbitmqctl reset
-	sudo rabbitmqctl start_app
-	@echo "RabbitMQ reset."
-
-clean: clean-db clean-redis clean-mq
+clean: clean-db
 	@echo "All services cleaned."
 
 run-backend:

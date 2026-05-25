@@ -18,5 +18,4 @@ export interface PostDetailResponse {
   authorId: number;
   authorUsername: string;
   createdAt: string;
-  tags: string[];
 }

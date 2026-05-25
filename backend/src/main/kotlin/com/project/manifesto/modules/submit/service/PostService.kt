@@ -1,31 +1,22 @@
 package com.project.manifesto.modules.submit.service
 
-import com.project.manifesto.modules.ai.service.TagService
 import com.project.manifesto.modules.submit.dto.CreatePostRequest
 import com.project.manifesto.modules.submit.dto.PostDetailResponse
 import com.project.manifesto.modules.submit.dto.PostResponse
 import com.project.manifesto.modules.submit.entity.Post
 import com.project.manifesto.modules.submit.entity.PostType
-import com.project.manifesto.modules.submit.event.PostCreatedEvent
 import com.project.manifesto.modules.submit.repository.PostRepository
 import com.project.manifesto.modules.user.repository.UserRepository
 import jakarta.persistence.EntityNotFoundException
-import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.context.ApplicationEventPublisher
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
-import org.springframework.data.redis.core.StringRedisTemplate
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import java.time.Instant
 
 @Service
 class PostService(
     private val postRepository: PostRepository,
-    private val userRepository: UserRepository,
-    private val publisher: ApplicationEventPublisher,
-    private val tagService: TagService,
-    @Autowired(required = false) private val redisTemplate: StringRedisTemplate?
+    private val userRepository: UserRepository
 ) {
 
     @Transactional
@@ -49,7 +40,6 @@ class PostService(
             hotScore = calculateInitialHotScore()
         )
         val saved = postRepository.save(post)
-        publisher.publishEvent(PostCreatedEvent(saved.id, saved.title, saved.url, saved.content, saved.type.name))
         return toDetailResponse(saved)
     }
 
@@ -114,7 +104,6 @@ class PostService(
     private fun softDeletePost(post: Post) {
         post.deleted = true
         postRepository.save(post)
-        redisTemplate?.delete("feed:hot:top100")
     }
 
     @Transactional
@@ -131,7 +120,6 @@ class PostService(
     fun toPostResponse(post: Post): PostResponse {
         val author = userRepository.findById(post.authorId)
             .orElse(null)
-        val tags = tagService.getTagsForPost(post.id)
         return PostResponse(
             id = post.id,
             title = post.title,
@@ -143,15 +131,13 @@ class PostService(
             commentCount = post.commentCount,
             type = post.type.name,
             authorUsername = author?.username ?: "deleted",
-            createdAt = post.createdAt,
-            tags = tags
+            createdAt = post.createdAt
         )
     }
 
     private fun toDetailResponse(post: Post): PostDetailResponse {
         val author = userRepository.findById(post.authorId)
             .orElse(null)
-        val tags = tagService.getTagsForPost(post.id)
         return PostDetailResponse(
             id = post.id,
             title = post.title,
@@ -164,8 +150,7 @@ class PostService(
             type = post.type.name,
             authorId = post.authorId,
             authorUsername = author?.username ?: "deleted",
-            createdAt = post.createdAt,
-            tags = tags
+            createdAt = post.createdAt
         )
     }
 }

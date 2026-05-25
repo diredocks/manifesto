@@ -1,4 +1,4 @@
-# E2E profile: real PostgreSQL + Redis + RabbitMQ.
+# E2E profile: real PostgreSQL.
 # Connections overridable via env vars.
 #
 # Usage:
@@ -8,11 +8,6 @@
 #   E2E_DB_URL        default: jdbc:postgresql://localhost:5432/manifesto_e2e
 #   E2E_DB_USERNAME   default: manifesto
 #   E2E_DB_PASSWORD   default: manifesto
-#   REDIS_HOST         default: localhost
-#   REDIS_PORT         default: 6379
-#   RABBITMQ_HOST      default: localhost
-#   RABBITMQ_PORT      default: 5672
-#   DEEPSEEK_API_KEY   optional (AI features skip if blank)
 
 spring:
   datasource:
@@ -25,26 +20,6 @@ spring:
     hibernate:
       ddl-auto: create-drop
 
-  data:
-    redis:
-      host: ${REDIS_HOST:localhost}
-      port: ${REDIS_PORT:6379}
-
-  rabbitmq:
-    host: ${RABBITMQ_HOST:localhost}
-    port: ${RABBITMQ_PORT:5672}
-    username: ${RABBITMQ_USERNAME:guest}
-    password: ${RABBITMQ_PASSWORD:guest}
-
-  ai:
-    openai:
-      api-key: dummy
-
 jwt:
   secret: e2e-test-secret-key-must-be-at-least-32-bytes-long-for-hs256
   expiration-ms: 3600000
-
-app:
-  feed:
-    top100-ttl-minutes: 1
-

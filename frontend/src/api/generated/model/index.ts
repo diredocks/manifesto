@@ -11,7 +11,6 @@ export * from './apiResponseCommentResponse';
 export * from './apiResponseInteger';
 export * from './apiResponseListCommentResponse';
 export * from './apiResponseListPostResponse';
-export * from './apiResponseListString';
 export * from './apiResponseListUserListItem';
 export * from './apiResponseLong';
 export * from './apiResponsePageNotificationResponse';

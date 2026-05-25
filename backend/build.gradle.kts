@@ -26,9 +26,6 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-validation")
-    implementation("org.springframework.boot:spring-boot-starter-amqp")
-    implementation("org.springframework.boot:spring-boot-starter-data-redis")
-
     // Kotlin
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
@@ -45,12 +42,6 @@ dependencies {
 
     // OpenAPI / Swagger
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0")
-
-    // Spring AI
-    implementation("org.springframework.ai:spring-ai-openai-spring-boot-starter:1.0.0-M1")
-
-    // HTML parsing for AI summary
-    implementation("org.jsoup:jsoup:1.18.1")
 
     // Test
     testImplementation("org.springframework.boot:spring-boot-starter-test")

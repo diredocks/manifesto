@@ -160,10 +160,10 @@ class PostVoteFlowE2ETest @Autowired constructor(
         assertTrue(postRepository.findById(postId).orElseThrow().deleted)
     }
 
-    // ── voting (exercises Redis distributed lock) ───────────────────────
+    // ── voting ────────────────────────────────────────────────────────
 
     @Test
-    fun `upvote exercises Redis lock, count increments, remove decrements`() {
+    fun `upvote count increments, remove decrements`() {
         val tokenA = registerAndGetToken("voterA")
         val tokenB = registerAndGetToken("voterB")
 
@@ -257,7 +257,7 @@ class PostVoteFlowE2ETest @Autowired constructor(
     // ── notifications ───────────────────────────────────────────────────
 
     @Test
-    fun `reply triggers RabbitMQ notification for parent author`() {
+    fun `reply triggers notification for parent author`() {
         val tokenAlice = registerAndGetToken("alice_n")
         val tokenBob = registerAndGetToken("bob_n")
 
@@ -277,15 +277,12 @@ class PostVoteFlowE2ETest @Autowired constructor(
         }.andReturn()
         val commentId = objectMapper.readTree(cRes.response.contentAsString)["data"]["id"].asLong()
 
-        // bob replies → notification event published via RabbitMQ
+        // bob replies → notification created synchronously
         mockMvc.post("/api/v1/posts/$postId/comments") {
             contentType = MediaType.APPLICATION_JSON
             header("Authorization", "Bearer $tokenBob")
             content = """{"content":"Reply!","parentId":$commentId}"""
         }.andExpect { status { isOk() } }
-
-        // allow async delivery
-        Thread.sleep(2000)
 
         val aliceId = userRepository.findByUsername("alice_n")!!.id
         val notifications = notificationRepository.findByReceiverIdOrderByCreatedAtDesc(
