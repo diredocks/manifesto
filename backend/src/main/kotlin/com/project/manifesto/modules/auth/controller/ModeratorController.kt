@@ -1,11 +1,10 @@
 package com.project.manifesto.modules.auth.controller
 
 import com.project.manifesto.common.dto.ApiResponse
-import com.project.manifesto.modules.comment.repository.CommentRepository
+import com.project.manifesto.modules.comment.service.CommentService
 import com.project.manifesto.modules.submit.service.PostService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
-import jakarta.persistence.EntityNotFoundException
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -19,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController
 @Tag(name = "Moderator", description = "Moderator tools")
 class ModeratorController(
     private val postService: PostService,
-    private val commentRepository: CommentRepository
+    private val commentService: CommentService
 ) {
 
     @DeleteMapping("/posts/{id}")
@@ -32,11 +31,7 @@ class ModeratorController(
     @DeleteMapping("/comments/{id}")
     @Operation(summary = "Delete any comment (moderator/admin)")
     fun deleteComment(@PathVariable id: Long): ResponseEntity<ApiResponse<Boolean>> {
-        val comment = commentRepository.findById(id)
-            .orElseThrow { EntityNotFoundException("Comment not found: $id") }
-        comment.deleted = true
-        comment.content = "[deleted]"
-        commentRepository.save(comment)
+        commentService.deleteCommentAsModerator(id)
         return ResponseEntity.ok(ApiResponse.success(true))
     }
 }

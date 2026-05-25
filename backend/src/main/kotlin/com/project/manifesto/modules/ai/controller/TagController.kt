@@ -30,24 +30,7 @@ class TagController(
     @Operation(summary = "Get posts by tag")
     fun getPostsByTag(@PathVariable tagName: String): ResponseEntity<ApiResponse<List<PostResponse>>> {
         val postIds = tagService.getPostIdsByTag(tagName)
-        val posts = postIds.mapNotNull { postId ->
-            runCatching { postService.getPostById(postId) }.getOrNull()
-        }.map {
-            PostResponse(
-                id = it.id,
-                title = it.title,
-                url = it.url,
-                content = it.content,
-                summary = it.summary,
-                score = it.score,
-                hotScore = it.hotScore,
-                commentCount = it.commentCount,
-                type = it.type,
-                authorUsername = it.authorUsername,
-                createdAt = it.createdAt,
-                tags = it.tags
-            )
-        }
+        val posts = postService.listPostsByIds(postIds)
         return ResponseEntity.ok(ApiResponse.success(posts))
     }
 }

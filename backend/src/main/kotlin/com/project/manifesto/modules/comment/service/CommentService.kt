@@ -83,10 +83,22 @@ class CommentService(
         val comment = commentRepository.findById(commentId)
             .orElseThrow { EntityNotFoundException("Comment not found: $commentId") }
         require(comment.authorId == userId) { "Not authorized to delete this comment" }
+        softDeleteComment(comment)
+        return true
+    }
+
+    @Transactional
+    fun deleteCommentAsModerator(commentId: Long): Boolean {
+        val comment = commentRepository.findById(commentId)
+            .orElseThrow { EntityNotFoundException("Comment not found: $commentId") }
+        softDeleteComment(comment)
+        return true
+    }
+
+    private fun softDeleteComment(comment: Comment) {
         comment.deleted = true
         comment.content = "[deleted]"
         commentRepository.save(comment)
-        return true
     }
 
     private fun toResponse(comment: Comment): CommentResponse {

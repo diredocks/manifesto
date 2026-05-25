@@ -1,7 +1,7 @@
 package com.project.manifesto.modules.vote.controller
 
 import com.project.manifesto.common.dto.ApiResponse
-import com.project.manifesto.modules.user.repository.UserRepository
+import com.project.manifesto.modules.user.service.UserService
 import com.project.manifesto.modules.vote.service.VoteService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController
 @Tag(name = "Voting", description = "Vote APIs")
 class VoteController(
     private val voteService: VoteService,
-    private val userRepository: UserRepository
+    private val userService: UserService
 ) {
 
     @PostMapping("/upvote")
@@ -28,8 +28,7 @@ class VoteController(
         @PathVariable postId: Long,
         authentication: Authentication
     ): ResponseEntity<ApiResponse<Boolean>> {
-        val user = userRepository.findByUsername(authentication.name)
-            ?: throw IllegalArgumentException("User not found")
+        val user = userService.findByUsername(authentication.name)
         val result = voteService.upvote(user.id, postId)
         return ResponseEntity.ok(ApiResponse.success(result))
     }
@@ -40,8 +39,7 @@ class VoteController(
         @PathVariable postId: Long,
         authentication: Authentication
     ): ResponseEntity<ApiResponse<Boolean>> {
-        val user = userRepository.findByUsername(authentication.name)
-            ?: throw IllegalArgumentException("User not found")
+        val user = userService.findByUsername(authentication.name)
         val result = voteService.removeVote(user.id, postId)
         return ResponseEntity.ok(ApiResponse.success(result))
     }
@@ -52,8 +50,7 @@ class VoteController(
         @PathVariable postId: Long,
         authentication: Authentication
     ): ResponseEntity<ApiResponse<Boolean>> {
-        val user = userRepository.findByUsername(authentication.name)
-            ?: throw IllegalArgumentException("User not found")
+        val user = userService.findByUsername(authentication.name)
         val result = voteService.hasVoted(user.id, postId)
         return ResponseEntity.ok(ApiResponse.success(result))
     }

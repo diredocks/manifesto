@@ -31,4 +31,6 @@ interface PostRepository : JpaRepository<Post, Long> {
     )
 
     fun findByAuthorIdAndDeletedFalseOrderByCreatedAtDesc(authorId: Long, pageable: Pageable): Page<Post>
+
+    fun findByIdInAndDeletedFalse(ids: List<Long>): List<Post>
 }

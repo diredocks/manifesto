@@ -89,6 +89,13 @@ class PostService(
     }
 
     @Transactional(readOnly = true)
+    fun listPostsByIds(ids: List<Long>): List<PostResponse> {
+        if (ids.isEmpty()) return emptyList()
+        return postRepository.findByIdInAndDeletedFalse(ids)
+            .map { toPostResponse(it) }
+    }
+
+    @Transactional(readOnly = true)
     fun listPostsByUser(userId: Long, pageable: Pageable): Page<PostResponse> {
         return postRepository.findByAuthorIdAndDeletedFalseOrderByCreatedAtDesc(userId, pageable)
             .map { toPostResponse(it) }
@@ -115,6 +122,13 @@ class PostService(
         post.deleted = true
         postRepository.save(post)
         redisTemplate?.delete("feed:hot:top100")
+    }
+
+    @Transactional
+    fun updateSummary(postId: Long, summary: String) {
+        val post = postRepository.findById(postId).orElse(null) ?: return
+        post.summary = summary
+        postRepository.save(post)
     }
 
     private fun calculateInitialHotScore(): Double {

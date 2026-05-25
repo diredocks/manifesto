@@ -5,7 +5,7 @@ import com.project.manifesto.modules.submit.dto.CreatePostRequest
 import com.project.manifesto.modules.submit.dto.PostDetailResponse
 import com.project.manifesto.modules.submit.dto.PostResponse
 import com.project.manifesto.modules.submit.service.PostService
-import com.project.manifesto.modules.user.repository.UserRepository
+import com.project.manifesto.modules.user.service.UserService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController
 @Tag(name = "Posts", description = "Post submission APIs")
 class PostController(
     private val postService: PostService,
-    private val userRepository: UserRepository
+    private val userService: UserService
 ) {
 
     @PostMapping
@@ -37,8 +37,7 @@ class PostController(
         @Valid @RequestBody request: CreatePostRequest,
         authentication: Authentication
     ): ResponseEntity<ApiResponse<PostDetailResponse>> {
-        val user = userRepository.findByUsername(authentication.name)
-            ?: throw IllegalArgumentException("User not found")
+        val user = userService.findByUsername(authentication.name)
         val response = postService.createPost(user.id, request)
         return ResponseEntity.ok(ApiResponse.success(response))
     }
@@ -73,8 +72,7 @@ class PostController(
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "20") size: Int
     ): ResponseEntity<ApiResponse<Page<PostResponse>>> {
-        val user = userRepository.findByUsername(username)
-            ?: return ResponseEntity.notFound().build()
+        val user = userService.findByUsername(username)
         val pageable = PageRequest.of(page, size)
         val result = postService.listPostsByUser(user.id, pageable)
         return ResponseEntity.ok(ApiResponse.success(result))
@@ -86,8 +84,7 @@ class PostController(
         @PathVariable id: Long,
         authentication: Authentication
     ): ResponseEntity<ApiResponse<Boolean>> {
-        val user = userRepository.findByUsername(authentication.name)
-            ?: throw IllegalArgumentException("User not found")
+        val user = userService.findByUsername(authentication.name)
         val response = postService.deletePost(id, user.id)
         return ResponseEntity.ok(ApiResponse.success(response))
     }

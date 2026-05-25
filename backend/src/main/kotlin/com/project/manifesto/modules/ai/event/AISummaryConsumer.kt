@@ -5,7 +5,7 @@ import com.project.manifesto.modules.ai.service.AIService
 import com.project.manifesto.modules.ai.service.TagService
 import com.project.manifesto.modules.submit.entity.PostType
 import com.project.manifesto.modules.submit.event.PostCreatedEvent
-import com.project.manifesto.modules.submit.repository.PostRepository
+import com.project.manifesto.modules.submit.service.PostService
 import org.slf4j.LoggerFactory
 import org.springframework.amqp.rabbit.annotation.RabbitListener
 import org.springframework.context.annotation.Profile
@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional
 class AISummaryConsumer(
     private val aiService: AIService,
     private val tagService: TagService,
-    private val postRepository: PostRepository
+    private val postService: PostService
 ) {
 
     private val logger = LoggerFactory.getLogger(javaClass)
@@ -26,12 +26,6 @@ class AISummaryConsumer(
     @Transactional
     fun handlePostCreated(event: PostCreatedEvent) {
         logger.info("AI processing post {}: {}", event.postId, event.title)
-
-        val post = postRepository.findById(event.postId).orElse(null)
-        if (post == null) {
-            logger.warn("Post {} not found (transaction not yet committed), will retry", event.postId)
-            throw IllegalStateException("Post not found: ${event.postId}. Will be retried after transaction commit.")
-        }
 
         val content = if (event.type == PostType.LINK.name) {
             event.url
@@ -48,8 +42,7 @@ class AISummaryConsumer(
         if (event.type == PostType.LINK.name && !event.url.isNullOrBlank()) {
             val summary = aiService.summarizeUrl(event.url)
             if (summary != null) {
-                post.summary = summary
-                postRepository.save(post)
+                postService.updateSummary(event.postId, summary)
                 logger.info("AI summary saved for post {}", event.postId)
             }
         }

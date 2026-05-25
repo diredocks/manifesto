@@ -4,7 +4,7 @@ import com.project.manifesto.common.dto.ApiResponse
 import com.project.manifesto.modules.comment.dto.CommentResponse
 import com.project.manifesto.modules.comment.dto.CreateCommentRequest
 import com.project.manifesto.modules.comment.service.CommentService
-import com.project.manifesto.modules.user.repository.UserRepository
+import com.project.manifesto.modules.user.service.UserService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController
 @Tag(name = "Comments", description = "Comment APIs")
 class CommentController(
     private val commentService: CommentService,
-    private val userRepository: UserRepository
+    private val userService: UserService
 ) {
 
     @PostMapping("/posts/{postId}/comments")
@@ -33,8 +33,7 @@ class CommentController(
         @Valid @RequestBody request: CreateCommentRequest,
         authentication: Authentication
     ): ResponseEntity<ApiResponse<CommentResponse>> {
-        val user = userRepository.findByUsername(authentication.name)
-            ?: throw IllegalArgumentException("User not found")
+        val user = userService.findByUsername(authentication.name)
         val response = commentService.createComment(user.id, postId, request)
         return ResponseEntity.ok(ApiResponse.success(response))
     }
@@ -52,8 +51,7 @@ class CommentController(
         @PathVariable commentId: Long,
         authentication: Authentication
     ): ResponseEntity<ApiResponse<Boolean>> {
-        val user = userRepository.findByUsername(authentication.name)
-            ?: throw IllegalArgumentException("User not found")
+        val user = userService.findByUsername(authentication.name)
         val response = commentService.deleteComment(commentId, user.id)
         return ResponseEntity.ok(ApiResponse.success(response))
     }

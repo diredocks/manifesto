@@ -3,7 +3,7 @@ package com.project.manifesto.modules.notification.controller
 import com.project.manifesto.common.dto.ApiResponse
 import com.project.manifesto.modules.notification.dto.NotificationResponse
 import com.project.manifesto.modules.notification.service.NotificationService
-import com.project.manifesto.modules.user.repository.UserRepository
+import com.project.manifesto.modules.user.service.UserService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.data.domain.Page
@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController
 @Tag(name = "Notifications", description = "Notification APIs")
 class NotificationController(
     private val notificationService: NotificationService,
-    private val userRepository: UserRepository
+    private val userService: UserService
 ) {
 
     @GetMapping
@@ -32,8 +32,7 @@ class NotificationController(
         @RequestParam(defaultValue = "20") size: Int,
         authentication: Authentication
     ): ResponseEntity<ApiResponse<Page<NotificationResponse>>> {
-        val user = userRepository.findByUsername(authentication.name)
-            ?: throw IllegalArgumentException("User not found")
+        val user = userService.findByUsername(authentication.name)
         val result = notificationService.getUserNotifications(user.id, PageRequest.of(page, size))
         return ResponseEntity.ok(ApiResponse.success(result))
     }
@@ -41,8 +40,7 @@ class NotificationController(
     @GetMapping("/unread-count")
     @Operation(summary = "Get unread notification count")
     fun getUnreadCount(authentication: Authentication): ResponseEntity<ApiResponse<Long>> {
-        val user = userRepository.findByUsername(authentication.name)
-            ?: throw IllegalArgumentException("User not found")
+        val user = userService.findByUsername(authentication.name)
         val result = notificationService.getUnreadCount(user.id)
         return ResponseEntity.ok(ApiResponse.success(result))
     }
@@ -53,8 +51,7 @@ class NotificationController(
         @PathVariable id: Long,
         authentication: Authentication
     ): ResponseEntity<ApiResponse<Boolean>> {
-        val user = userRepository.findByUsername(authentication.name)
-            ?: throw IllegalArgumentException("User not found")
+        val user = userService.findByUsername(authentication.name)
         val result = notificationService.markAsRead(id, user.id)
         return ResponseEntity.ok(ApiResponse.success(result))
     }
