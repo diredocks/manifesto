@@ -55,6 +55,7 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
 tasks.withType<KotlinCompile> {
@@ -66,6 +67,7 @@ tasks.withType<KotlinCompile> {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+    jvmArgs("-Xshare:off")
 }
 
 tasks.test {
@@ -78,6 +80,9 @@ tasks.register<Test>("e2eTest") {
     useJUnitPlatform {
         includeTags("e2e")
     }
+    // Explicit classpath to avoid deprecation on custom Test task
+    classpath = sourceSets["test"].runtimeClasspath
+    testClassesDirs = sourceSets["test"].output.classesDirs
     systemProperty("spring.profiles.active", "e2e")
     mustRunAfter(tasks.test)
 }
