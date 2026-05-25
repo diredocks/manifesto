@@ -1,8 +1,10 @@
 import { useQueryClient } from '@tanstack/react-query'
 import { useDeletePost } from '@/api/generated/posts/posts'
 import { useDeleteComment1 } from '@/api/generated/comments/comments'
-import { useDeletePost1 } from '@/api/generated/moderator/moderator'
-import { useDeleteComment } from '@/api/generated/moderator/moderator'
+import {
+  useDeletePost1,
+  useDeleteComment,
+} from '@/api/generated/moderator/moderator'
 
 export function useDeleteOwnPost() {
   const queryClient = useQueryClient()

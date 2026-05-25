@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useParams, Link } from 'react-router-dom'
+import { useParams, Link, useNavigate } from 'react-router-dom'
 import { useGetPost } from '@/api/generated/posts/posts'
 import { useGetComments, useCreateComment } from '@/api/generated/comments/comments'
 import { useQueryClient } from '@tanstack/react-query'
@@ -8,7 +8,6 @@ import { CommentForm } from '@/components/CommentForm'
 import { VoteButton } from '@/components/VoteButton'
 import { useAuthStore } from '@/features/auth/store'
 import { useDeleteOwnPost, useModDeletePost, useDeleteOwnComment, useModDeleteComment } from '@/features/moderation/hooks'
-import { useNavigate } from 'react-router-dom'
 
 function timeAgo(dateStr: string): string {
   const now = Date.now()
