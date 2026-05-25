@@ -1,4 +1,4 @@
-.PHONY: init clean-db clean-redis clean-mq clean-all run-backend
+.PHONY: init clean-db clean-redis clean-mq clean run-backend run-frontend
 
 PG_HOST ?= localhost
 PG_PORT ?= 5432
@@ -38,7 +38,7 @@ clean-mq:
 	sudo rabbitmqctl start_app
 	@echo "RabbitMQ reset."
 
-clean-all: clean-db clean-redis clean-mq
+clean: clean-db clean-redis clean-mq
 	@echo "All services cleaned."
 
 run-backend:
