@@ -5,6 +5,7 @@ import com.project.manifesto.modules.ai.entity.Tag
 import com.project.manifesto.modules.ai.repository.PostTagRepository
 import com.project.manifesto.modules.ai.repository.TagRepository
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 
 @Service
@@ -20,13 +21,19 @@ class TagService(
 
         for (name in tagNames.map { it.lowercase().trim() }) {
             if (name.isBlank()) continue
-            var tag = tagRepository.findByName(name)
-            if (tag == null) {
-                tag = tagRepository.save(Tag(name = name))
-            }
+            val tag = findOrCreateTag(name)
             if (!postTagRepository.existsByPostIdAndTagId(postId, tag.id)) {
                 postTagRepository.save(PostTag(postId = postId, tagId = tag.id))
             }
+        }
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    fun findOrCreateTag(name: String): Tag {
+        return tagRepository.findByName(name) ?: try {
+            tagRepository.saveAndFlush(Tag(name = name))
+        } catch (e: Exception) {
+            tagRepository.findByName(name) ?: throw e
         }
     }
 
