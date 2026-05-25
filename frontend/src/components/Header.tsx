@@ -27,6 +27,8 @@ export function Header() {
         <Link to="/new" className="text-white visited:text-white">new</Link>
         <span className="text-white/70">|</span>
         <Link to="/ask" className="text-white visited:text-white">ask</Link>
+        <span className="text-white/70">|</span>
+        <Link to="/submit" className="text-white visited:text-white">submit</Link>
       </nav>
       <div className="ml-auto flex gap-2 items-center">
         {loggedIn ? (
