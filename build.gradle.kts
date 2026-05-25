@@ -48,6 +48,9 @@ dependencies {
     // Spring AI
     implementation("org.springframework.ai:spring-ai-openai-spring-boot-starter:1.0.0-M1")
 
+    // HTML parsing for AI summary
+    implementation("org.jsoup:jsoup:1.18.1")
+
     // Test
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")

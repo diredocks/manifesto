@@ -3,6 +3,7 @@ package com.project.manifesto
 import com.project.manifesto.infra.rabbitmq.EventPublisher
 import com.project.manifesto.infra.redis.LockService
 import com.project.manifesto.modules.notification.event.NotificationEvent
+import com.project.manifesto.modules.submit.event.PostCreatedEvent
 import com.project.manifesto.modules.vote.event.PostVotedEvent
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.context.annotation.Bean
@@ -28,5 +29,6 @@ class TestConfig {
     fun eventPublisher(): EventPublisher = object : EventPublisher {
         override fun publishPostVoted(event: PostVotedEvent) {}
         override fun publishNotification(event: NotificationEvent) {}
+        override fun publishPostCreated(event: PostCreatedEvent) {}
     }
 }

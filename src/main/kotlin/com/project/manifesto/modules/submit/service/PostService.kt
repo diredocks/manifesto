@@ -1,10 +1,12 @@
 package com.project.manifesto.modules.submit.service
 
+import com.project.manifesto.infra.rabbitmq.EventPublisher
 import com.project.manifesto.modules.submit.dto.CreatePostRequest
 import com.project.manifesto.modules.submit.dto.PostDetailResponse
 import com.project.manifesto.modules.submit.dto.PostResponse
 import com.project.manifesto.modules.submit.entity.Post
 import com.project.manifesto.modules.submit.entity.PostType
+import com.project.manifesto.modules.submit.event.PostCreatedEvent
 import com.project.manifesto.modules.submit.repository.PostRepository
 import com.project.manifesto.modules.user.repository.UserRepository
 import jakarta.persistence.EntityNotFoundException
@@ -17,7 +19,8 @@ import java.time.Instant
 @Service
 class PostService(
     private val postRepository: PostRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val eventPublisher: EventPublisher
 ) {
 
     @Transactional
@@ -41,6 +44,9 @@ class PostService(
             hotScore = calculateInitialHotScore()
         )
         val saved = postRepository.save(post)
+        eventPublisher.publishPostCreated(
+            PostCreatedEvent(saved.id, saved.title, saved.url, saved.content, saved.type.name)
+        )
         return toDetailResponse(saved)
     }
 
