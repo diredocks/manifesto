@@ -66,6 +66,20 @@ class PostController(
         return ResponseEntity.ok(ApiResponse.success(result))
     }
 
+    @GetMapping("/user/{username}")
+    @Operation(summary = "Get posts by username")
+    fun getPostsByUser(
+        @PathVariable username: String,
+        @RequestParam(defaultValue = "0") page: Int,
+        @RequestParam(defaultValue = "20") size: Int
+    ): ResponseEntity<ApiResponse<Page<PostResponse>>> {
+        val user = userRepository.findByUsername(username)
+            ?: return ResponseEntity.notFound().build()
+        val pageable = PageRequest.of(page, size)
+        val result = postService.listPostsByUser(user.id, pageable)
+        return ResponseEntity.ok(ApiResponse.success(result))
+    }
+
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete own post")
     fun deletePost(

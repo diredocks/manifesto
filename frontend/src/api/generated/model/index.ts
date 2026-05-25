@@ -28,6 +28,7 @@ export * from './createPostRequestType';
 export * from './getHotParams';
 export * from './getNewParams';
 export * from './getNotificationsParams';
+export * from './getPostsByUserParams';
 export * from './getTopParams';
 export * from './listPostsParams';
 export * from './loginRequest';

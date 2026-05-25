@@ -28,6 +28,7 @@ import type {
   ApiResponsePagePostResponse,
   ApiResponsePostDetailResponse,
   CreatePostRequest,
+  GetPostsByUserParams,
   ListPostsParams
 } from '.././model';
 
@@ -346,4 +347,103 @@ export const useDeletePost = <TError = unknown,
 
       return useMutation(mutationOptions, queryClient);
     }
+    /**
+ * @summary Get posts by username
+ */
+export const getPostsByUser = (
+    username: string,
+    params?: GetPostsByUserParams,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<ApiResponsePagePostResponse>(
+      {url: `/api/v1/posts/user/${username}`, method: 'GET',
+        params, signal
+    },
+      );
+    }
+  
+
+
+
+export const getGetPostsByUserQueryKey = (username?: string,
+    params?: GetPostsByUserParams,) => {
+    return [
+    `/api/v1/posts/user/${username}`, ...(params ? [params]: [])
+    ] as const;
+    }
+
     
+export const getGetPostsByUserQueryOptions = <TData = Awaited<ReturnType<typeof getPostsByUser>>, TError = unknown>(username: string,
+    params?: GetPostsByUserParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getPostsByUser>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getGetPostsByUserQueryKey(username,params);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getPostsByUser>>> = ({ signal }) => getPostsByUser(username,params, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(username), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getPostsByUser>>, TError, TData> & { queryKey: DataTag<QueryKey, TData> }
+}
+
+export type GetPostsByUserQueryResult = NonNullable<Awaited<ReturnType<typeof getPostsByUser>>>
+export type GetPostsByUserQueryError = unknown
+
+
+export function useGetPostsByUser<TData = Awaited<ReturnType<typeof getPostsByUser>>, TError = unknown>(
+ username: string,
+    params: undefined |  GetPostsByUserParams, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getPostsByUser>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getPostsByUser>>,
+          TError,
+          Awaited<ReturnType<typeof getPostsByUser>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> }
+export function useGetPostsByUser<TData = Awaited<ReturnType<typeof getPostsByUser>>, TError = unknown>(
+ username: string,
+    params?: GetPostsByUserParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getPostsByUser>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof getPostsByUser>>,
+          TError,
+          Awaited<ReturnType<typeof getPostsByUser>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> }
+export function useGetPostsByUser<TData = Awaited<ReturnType<typeof getPostsByUser>>, TError = unknown>(
+ username: string,
+    params?: GetPostsByUserParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getPostsByUser>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> }
+/**
+ * @summary Get posts by username
+ */
+
+export function useGetPostsByUser<TData = Awaited<ReturnType<typeof getPostsByUser>>, TError = unknown>(
+ username: string,
+    params?: GetPostsByUserParams, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getPostsByUser>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> } {
+
+  const queryOptions = getGetPostsByUserQueryOptions(username,params,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
