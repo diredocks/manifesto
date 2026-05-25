@@ -2,6 +2,7 @@ package com.project.manifesto.modules.ai.event
 
 import com.project.manifesto.infra.rabbitmq.RabbitConfig
 import com.project.manifesto.modules.ai.service.AIService
+import com.project.manifesto.modules.ai.service.TagService
 import com.project.manifesto.modules.submit.entity.PostType
 import com.project.manifesto.modules.submit.event.PostCreatedEvent
 import com.project.manifesto.modules.submit.repository.PostRepository
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional
 @Profile("!test")
 class AISummaryConsumer(
     private val aiService: AIService,
+    private val tagService: TagService,
     private val postRepository: PostRepository
 ) {
 
@@ -25,11 +27,24 @@ class AISummaryConsumer(
     fun handlePostCreated(event: PostCreatedEvent) {
         logger.info("AI processing post {}: {}", event.postId, event.title)
 
+        val post = postRepository.findById(event.postId).orElse(null) ?: return
+
+        val content = if (event.type == PostType.LINK.name) {
+            event.url
+        } else {
+            event.content
+        }
+
+        val tags = aiService.generateTags(event.title, content)
+        if (tags.isNotEmpty()) {
+            tagService.assignTags(event.postId, tags)
+            logger.info("Tags assigned for post {}: {}", event.postId, tags)
+        }
+
         if (event.type == PostType.LINK.name && !event.url.isNullOrBlank()) {
             val summary = aiService.summarizeUrl(event.url)
             if (summary != null) {
-                val post = postRepository.findById(event.postId).orElse(null)
-                post?.summary = summary
+                post.summary = summary
                 postRepository.save(post)
                 logger.info("AI summary saved for post {}", event.postId)
             }

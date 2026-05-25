@@ -1,6 +1,7 @@
 package com.project.manifesto.modules.submit.service
 
 import com.project.manifesto.infra.rabbitmq.EventPublisher
+import com.project.manifesto.modules.ai.service.TagService
 import com.project.manifesto.modules.submit.dto.CreatePostRequest
 import com.project.manifesto.modules.submit.dto.PostDetailResponse
 import com.project.manifesto.modules.submit.dto.PostResponse
@@ -20,7 +21,8 @@ import java.time.Instant
 class PostService(
     private val postRepository: PostRepository,
     private val userRepository: UserRepository,
-    private val eventPublisher: EventPublisher
+    private val eventPublisher: EventPublisher,
+    private val tagService: TagService
 ) {
 
     @Transactional
@@ -101,6 +103,7 @@ class PostService(
     fun toPostResponse(post: Post): PostResponse {
         val author = userRepository.findById(post.authorId)
             .orElse(null)
+        val tags = tagService.getTagsForPost(post.id)
         return PostResponse(
             id = post.id,
             title = post.title,
@@ -112,13 +115,15 @@ class PostService(
             commentCount = post.commentCount,
             type = post.type.name,
             authorUsername = author?.username ?: "deleted",
-            createdAt = post.createdAt
+            createdAt = post.createdAt,
+            tags = tags
         )
     }
 
     private fun toDetailResponse(post: Post): PostDetailResponse {
         val author = userRepository.findById(post.authorId)
             .orElse(null)
+        val tags = tagService.getTagsForPost(post.id)
         return PostDetailResponse(
             id = post.id,
             title = post.title,
@@ -131,7 +136,8 @@ class PostService(
             type = post.type.name,
             authorId = post.authorId,
             authorUsername = author?.username ?: "deleted",
-            createdAt = post.createdAt
+            createdAt = post.createdAt,
+            tags = tags
         )
     }
 }

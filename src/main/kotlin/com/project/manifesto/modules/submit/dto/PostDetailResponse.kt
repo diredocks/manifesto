@@ -14,5 +14,6 @@ data class PostDetailResponse(
     val type: String,
     val authorId: Long,
     val authorUsername: String,
-    val createdAt: Instant
+    val createdAt: Instant,
+    val tags: List<String> = emptyList()
 )
