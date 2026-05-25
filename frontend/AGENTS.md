@@ -236,8 +236,7 @@ src/
 │   ├── comment/
 │   ├── vote/
 │   ├── profile/
-│   ├── moderation/
-│   └── admin/
+│   └── moderation/
 ├── components/
 ├── hooks/
 ├── lib/
@@ -275,14 +274,12 @@ Pages:
  /register
  /user/:username
  /mod
- /admin
 ```
 
 Protected:
 
 * /submit
 * /mod
-* /admin
 
 ---
 
@@ -416,7 +413,6 @@ Success:
 * advanced caching
 * admin panel
 * mobile improvements
-* optional AI features
 
 ---
 
