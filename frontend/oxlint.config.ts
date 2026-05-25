@@ -1,0 +1,31 @@
+import { defineConfig } from "oxlint";
+
+export default defineConfig({
+  ignorePatterns: ["dist", "src/api/generated"],
+  plugins: ["typescript", "react", "react-hooks", "import"],
+  categories: {
+    correctness: "error",
+    suspicious: "warn",
+  },
+  settings: {
+    react: {
+      jsxRuntime: "automatic",
+    },
+  },
+  env: {
+    browser: true,
+    es2024: true,
+  },
+  rules: {
+    "react/react-in-jsx-scope": "off",
+    "import/no-unassigned-import": "off",
+    "import/no-named-as-default-member": "off",
+    "typescript/no-unused-vars": ["error", { argsIgnorePattern: "^_" }],
+    "typescript/no-explicit-any": "warn",
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn",
+    "no-console": ["warn", { allow: ["warn", "error"] }],
+    "no-debugger": "error",
+    "no-duplicate-imports": "error",
+  },
+});
