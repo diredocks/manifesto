@@ -101,7 +101,7 @@ Examples:
 
 Rules:
 
-* Server state must be cached
+* Server state must NOT be cached (always fetch fresh data)
 * Mutations must invalidate/update queries explicitly
 * No duplicate fetch logic in components
 * No ad-hoc request logic outside hooks
@@ -285,7 +285,6 @@ Protected:
 
 ## Performance Rules
 
-* React Query handles caching (no duplication in Zustand)
 * lazy load routes
 * avoid premature memoization
 
@@ -334,8 +333,9 @@ A feature is complete only if:
 * loading state
 * error state
 * empty state
-* TypeScript passes
-* build passes
+* `pnpm lint` passes
+* `pnpm tsc --noEmit` passes
+* `pnpm build` passes
 * tests pass (if applicable)
 
 ---
@@ -410,7 +410,6 @@ Success:
 * dark mode (Zustand optional)
 * keyboard shortcuts
 * optimistic updates
-* advanced caching
 * admin panel
 * mobile improvements
 
