@@ -5,6 +5,7 @@ import { useGetComments, useCreateComment } from '@/api/generated/comments/comme
 import { useQueryClient } from '@tanstack/react-query'
 import { CommentItem } from '@/components/CommentItem'
 import { CommentForm } from '@/components/CommentForm'
+import { VoteButton } from '@/components/VoteButton'
 
 function timeAgo(dateStr: string): string {
   const now = Date.now()
@@ -57,7 +58,9 @@ export function PostDetailPage() {
   return (
     <div className="py-2">
       <article className="mb-4">
-        <h1 className="text-base font-bold mb-1">
+        <div className="flex items-start gap-2 mb-1">
+          <VoteButton postId={post.id} />
+          <h1 className="text-base font-bold">
           {post.url ? (
             <a
               href={post.url}
@@ -70,7 +73,8 @@ export function PostDetailPage() {
           ) : (
             post.title
           )}
-        </h1>
+          </h1>
+        </div>
         <div className="text-xs text-gray-500 mb-2">
           {post.score} points by{' '}
           <Link to={`/user/${post.authorUsername}`} className="text-gray-500 hover:underline">

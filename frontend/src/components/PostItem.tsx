@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import type { PostResponse } from '@/api/generated/model'
+import { VoteButton } from './VoteButton'
 
 interface PostItemProps {
   post: PostResponse
@@ -33,10 +34,13 @@ export function PostItem({ post, rank }: PostItemProps) {
   const domain = extractDomain(post.url)
 
   return (
-    <div className="flex items-start gap-2 py-1 text-sm">
+    <div className="flex items-start gap-1 py-1 text-sm">
       {rank !== undefined && (
-        <span className="text-xs text-gray-500 w-6 text-right shrink-0">{rank}.</span>
+        <span className="text-xs text-gray-500 w-6 text-right shrink-0 pt-0.5">{rank}.</span>
       )}
+      <div className="shrink-0 pt-0.5">
+        <VoteButton postId={post.id} />
+      </div>
       <div className="min-w-0">
         <div className="flex items-baseline gap-1 flex-wrap">
           {post.url ? (
