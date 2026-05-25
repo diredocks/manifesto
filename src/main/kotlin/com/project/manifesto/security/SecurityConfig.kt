@@ -22,7 +22,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @EnableMethodSecurity(prePostEnabled = true)
 class SecurityConfig(
     private val jwtAuthenticationFilter: JwtAuthenticationFilter,
-    private val userDetailsService: UserDetailsService
+    private val userDetailsService: UserDetailsService,
+    private val jwtAuthenticationEntryPoint: JwtAuthenticationEntryPoint,
+    private val jwtAccessDeniedHandler: JwtAccessDeniedHandler
 ) {
 
     @Bean
@@ -46,6 +48,10 @@ class SecurityConfig(
         http
             .csrf { it.disable() }
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
+            .exceptionHandling { ex ->
+                ex.authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                ex.accessDeniedHandler(jwtAccessDeniedHandler)
+            }
             .authorizeHttpRequests { auth ->
                 auth
                     .requestMatchers("/api/v1/auth/**").permitAll()

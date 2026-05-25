@@ -40,7 +40,10 @@ class AuthController(
 
     @GetMapping("/me")
     @Operation(summary = "Get current user info")
-    fun me(authentication: Authentication): ResponseEntity<ApiResponse<UserInfoResponse>> {
+    fun me(authentication: Authentication?): ResponseEntity<ApiResponse<UserInfoResponse>> {
+        if (authentication == null || !authentication.isAuthenticated) {
+            return ResponseEntity.status(401).body(ApiResponse.unauthorized())
+        }
         val response = authService.getCurrentUser(authentication.name)
         return ResponseEntity.ok(ApiResponse.success(response))
     }
