@@ -87,6 +87,10 @@ class RankingService(
         }
     }
 
+    fun evictCache() {
+        redisTemplate?.delete(CACHE_KEY)
+    }
+
     private fun cacheHotPosts(posts: List<PostResponse>) {
         val rt = redisTemplate ?: return
         val json = objectMapper.writeValueAsString(posts.take(100))

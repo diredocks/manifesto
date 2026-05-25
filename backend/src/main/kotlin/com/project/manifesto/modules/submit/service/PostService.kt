@@ -11,8 +11,10 @@ import com.project.manifesto.modules.submit.event.PostCreatedEvent
 import com.project.manifesto.modules.submit.repository.PostRepository
 import com.project.manifesto.modules.user.repository.UserRepository
 import jakarta.persistence.EntityNotFoundException
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
+import org.springframework.data.redis.core.StringRedisTemplate
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.transaction.support.TransactionSynchronizationManager
@@ -23,7 +25,8 @@ class PostService(
     private val postRepository: PostRepository,
     private val userRepository: UserRepository,
     private val eventPublisher: EventPublisher,
-    private val tagService: TagService
+    private val tagService: TagService,
+    @Autowired(required = false) private val redisTemplate: StringRedisTemplate?
 ) {
 
     @Transactional
@@ -96,9 +99,22 @@ class PostService(
         val post = postRepository.findById(postId)
             .orElseThrow { EntityNotFoundException("Post not found: $postId") }
         require(post.authorId == userId) { "Not authorized to delete this post" }
+        softDeletePost(post)
+        return true
+    }
+
+    @Transactional
+    fun deletePostAsModerator(postId: Long): Boolean {
+        val post = postRepository.findById(postId)
+            .orElseThrow { EntityNotFoundException("Post not found: $postId") }
+        softDeletePost(post)
+        return true
+    }
+
+    private fun softDeletePost(post: Post) {
         post.deleted = true
         postRepository.save(post)
-        return true
+        redisTemplate?.delete("feed:hot:top100")
     }
 
     private fun calculateInitialHotScore(): Double {
