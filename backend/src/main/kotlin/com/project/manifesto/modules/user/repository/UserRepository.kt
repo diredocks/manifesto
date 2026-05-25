@@ -1,6 +1,7 @@
 package com.project.manifesto.modules.user.repository
 
 import com.project.manifesto.modules.user.entity.User
+import com.project.manifesto.modules.user.entity.UserRole
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
@@ -10,4 +11,5 @@ interface UserRepository : JpaRepository<User, Long> {
     fun findByEmail(email: String): User?
     fun existsByUsername(username: String): Boolean
     fun existsByEmail(email: String): Boolean
+    fun countByRole(role: UserRole): Long
 }

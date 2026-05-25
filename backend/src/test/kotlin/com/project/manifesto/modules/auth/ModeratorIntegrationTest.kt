@@ -144,4 +144,33 @@ class ModeratorIntegrationTest @Autowired constructor(
             status { isForbidden() }
         }
     }
+
+    @Test
+    fun `cannot demote the last admin to user`() {
+        val adminToken = createUserAndGetToken("admin3", UserRole.ROLE_ADMIN)
+        val admin = userRepository.findByUsername("admin3")!!
+
+        mockMvc.put("/api/v1/admin/users/${admin.id}/role") {
+            header("Authorization", "Bearer $adminToken")
+            param("role", "ROLE_USER")
+        }.andExpect {
+            status { isBadRequest() }
+            jsonPath("$.message") { value("Cannot change role: at least one admin must exist") }
+        }
+    }
+
+    @Test
+    fun `can demote an admin when another admin exists`() {
+        val adminToken = createUserAndGetToken("admin4", UserRole.ROLE_ADMIN)
+        createUserAndGetToken("admin5", UserRole.ROLE_ADMIN)
+        val target = userRepository.findByUsername("admin5")!!
+
+        mockMvc.put("/api/v1/admin/users/${target.id}/role") {
+            header("Authorization", "Bearer $adminToken")
+            param("role", "ROLE_USER")
+        }.andExpect {
+            status { isOk() }
+            jsonPath("$.data.role") { value("ROLE_USER") }
+        }
+    }
 }
