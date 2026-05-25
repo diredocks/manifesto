@@ -7,6 +7,7 @@ import { AskPage } from '@/pages/AskPage'
 import { SubmitPage } from '@/pages/SubmitPage'
 import { LoginPage } from '@/pages/LoginPage'
 import { RegisterPage } from '@/pages/RegisterPage'
+import { PostDetailPage } from '@/pages/PostDetailPage'
 import { NotFoundPage } from '@/pages/NotFoundPage'
 
 export function AppRouter() {
@@ -16,6 +17,7 @@ export function AppRouter() {
         <Route index element={<HomePage />} />
         <Route path="new" element={<NewPage />} />
         <Route path="ask" element={<AskPage />} />
+        <Route path="item/:id" element={<PostDetailPage />} />
         <Route path="submit" element={<ProtectedRoute><SubmitPage /></ProtectedRoute>} />
         <Route path="login" element={<LoginPage />} />
         <Route path="register" element={<RegisterPage />} />
