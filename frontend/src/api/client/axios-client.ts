@@ -2,7 +2,7 @@ import axios from 'axios'
 import type { AxiosRequestConfig } from 'axios'
 
 const axiosInstance = axios.create({
-  baseURL: '/api/v1',
+  baseURL: '/',
 })
 
 axiosInstance.interceptors.request.use((config) => {
