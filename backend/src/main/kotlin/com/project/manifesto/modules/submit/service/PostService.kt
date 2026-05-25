@@ -15,6 +15,7 @@ import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import org.springframework.transaction.support.TransactionSynchronizationManager
 import java.time.Instant
 
 @Service
@@ -46,9 +47,13 @@ class PostService(
             hotScore = calculateInitialHotScore()
         )
         val saved = postRepository.save(post)
-        eventPublisher.publishPostCreated(
-            PostCreatedEvent(saved.id, saved.title, saved.url, saved.content, saved.type.name)
-        )
+        TransactionSynchronizationManager.registerSynchronization(object : org.springframework.transaction.support.TransactionSynchronization {
+            override fun afterCommit() {
+                eventPublisher.publishPostCreated(
+                    PostCreatedEvent(saved.id, saved.title, saved.url, saved.content, saved.type.name)
+                )
+            }
+        })
         return toDetailResponse(saved)
     }
 

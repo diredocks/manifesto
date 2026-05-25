@@ -27,7 +27,11 @@ class AISummaryConsumer(
     fun handlePostCreated(event: PostCreatedEvent) {
         logger.info("AI processing post {}: {}", event.postId, event.title)
 
-        val post = postRepository.findById(event.postId).orElse(null) ?: return
+        val post = postRepository.findById(event.postId).orElse(null)
+        if (post == null) {
+            logger.warn("Post {} not found (transaction not yet committed), will retry", event.postId)
+            throw IllegalStateException("Post not found: ${event.postId}. Will be retried after transaction commit.")
+        }
 
         val content = if (event.type == PostType.LINK.name) {
             event.url
