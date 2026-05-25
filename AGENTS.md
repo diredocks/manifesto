@@ -656,3 +656,67 @@ The agent must follow a strict development loop for every feature.
 - Never commit broken code
 - Never mark feature complete without test pass
 - Never proceed with failing build/test
+
+# 19. Build & Test Guide (Gradle)
+
+All commands run from the project root. Network-restricted environments must export proxy env vars first.
+
+## Proxy setup
+
+```bash
+export JAVA_OPTS="-Dhttp.proxyHost=<host> -Dhttp.proxyPort=<port> -Dhttps.proxyHost=<host> -Dhttps.proxyPort=<port>"
+export HTTP_PROXY=http://<host>:<port>
+export HTTPS_PROXY=http://<host>:<port>
+```
+
+## Build
+
+```bash
+# Compile only (fast)
+./gradlew compileKotlin --no-daemon
+
+# Full executable jar
+./gradlew bootJar --no-daemon
+```
+
+The jar lands at `build/libs/manifesto-0.0.1-SNAPSHOT.jar`.
+
+## Test
+
+```bash
+# Run all tests (unit + integration)
+./gradlew test --no-daemon
+
+# Run a single test class
+./gradlew test --no-daemon --tests "com.project.manifesto.modules.auth.AuthIntegrationTest"
+
+# Run a single test method
+./gradlew test --no-daemon --tests "com.project.manifesto.modules.auth.AuthIntegrationTest.register new user returns JWT token"
+```
+
+Test profile (`application-test.yml`) uses:
+- H2 in-memory database (auto-schema, discarded after run)
+- Auto-config exclusions: `RabbitAutoConfiguration`, `RedisAutoConfiguration`
+- Test implementations provided by `TestConfig.kt` (in-memory `LockService`, no-op `EventPublisher`)
+- Dummy `spring.ai.openai.api-key` to satisfy Spring AI auto-config
+
+## Run
+
+```bash
+# Requires PostgreSQL, Redis, RabbitMQ running locally
+# Set AI API key before launch
+export DEEPSEEK_API_KEY=<your-key>
+java -jar build/libs/manifesto-0.0.1-SNAPSHOT.jar
+```
+
+Application starts on `http://localhost:8080`. Swagger UI at `/swagger-ui.html`.
+
+## Infrastructure dependencies
+
+| Service | Port | Required for |
+|---------|------|-------------|
+| PostgreSQL | 5432 | Production runtime |
+| Redis | 6379 | Distributed vote lock, hot-feed cache |
+| RabbitMQ | 5672 | Async event bus (recalc, notifications, AI) |
+
+All three are bypassed in test profile — tests run with zero external dependencies.
