@@ -13,6 +13,7 @@ export function Header() {
   const loggedIn = !!token
   const role = currentUser?.role ?? ''
   const isMod = role === 'ROLE_MODERATOR' || role === 'ROLE_ADMIN'
+  const isAdmin = role === 'ROLE_ADMIN'
 
   const handleLogout = () => {
     logout()
@@ -38,6 +39,12 @@ export function Header() {
             {isMod && (
               <>
                 <Link to="/mod" className="text-white visited:text-white no-underline">mod</Link>
+                <span className="text-white/70">|</span>
+              </>
+            )}
+            {isAdmin && (
+              <>
+                <Link to="/admin" className="text-white visited:text-white no-underline">admin</Link>
                 <span className="text-white/70">|</span>
               </>
             )}
