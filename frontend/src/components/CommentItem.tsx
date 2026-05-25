@@ -1,6 +1,13 @@
 import { Link } from 'react-router-dom'
 import type { CommentResponse } from '@/api/generated/model'
 
+interface CommentItemProps {
+  comment: CommentResponse
+  currentUsername?: string
+  isMod?: boolean
+  onDelete?: (commentId: number) => void
+}
+
 function timeAgo(dateStr: string): string {
   const now = Date.now()
   const diff = now - new Date(dateStr).getTime()
@@ -14,7 +21,7 @@ function timeAgo(dateStr: string): string {
   return new Date(dateStr).toLocaleDateString()
 }
 
-export function CommentItem({ comment }: { comment: CommentResponse }) {
+export function CommentItem({ comment, currentUsername, isMod, onDelete }: CommentItemProps) {
   if (comment.deleted) {
     return (
       <div className="pl-4 py-1">
@@ -23,6 +30,8 @@ export function CommentItem({ comment }: { comment: CommentResponse }) {
     )
   }
 
+  const canDelete = currentUsername === comment.authorUsername || isMod
+
   return (
     <div className="py-1" style={{ paddingLeft: `${comment.depth * 16}px` }}>
       <div className="text-xs text-gray-500 mb-1">
@@ -30,11 +39,28 @@ export function CommentItem({ comment }: { comment: CommentResponse }) {
           {comment.authorUsername}
         </Link>{' '}
         {timeAgo(comment.createdAt)}
+        {canDelete && onDelete && (
+          <>
+            {' | '}
+            <button
+              onClick={() => onDelete(comment.id)}
+              className="text-xs text-red-600 hover:underline cursor-pointer"
+            >
+              delete
+            </button>
+          </>
+        )}
       </div>
       <p className="text-sm whitespace-pre-wrap">{comment.content}</p>
       {comment.children.length > 0 &&
         comment.children.map((child) => (
-          <CommentItem key={child.id} comment={child} />
+          <CommentItem
+            key={child.id}
+            comment={child}
+            currentUsername={currentUsername}
+            isMod={isMod}
+            onDelete={onDelete}
+          />
         ))}
     </div>
   )

@@ -6,6 +6,9 @@ import { useQueryClient } from '@tanstack/react-query'
 import { CommentItem } from '@/components/CommentItem'
 import { CommentForm } from '@/components/CommentForm'
 import { VoteButton } from '@/components/VoteButton'
+import { useAuthStore } from '@/features/auth/store'
+import { useDeleteOwnPost, useModDeletePost, useDeleteOwnComment, useModDeleteComment } from '@/features/moderation/hooks'
+import { useNavigate } from 'react-router-dom'
 
 function timeAgo(dateStr: string): string {
   const now = Date.now()
@@ -25,6 +28,23 @@ export function PostDetailPage() {
   const postId = id ? parseInt(id, 10) : 0
   const queryClient = useQueryClient()
   const [replyingTo, setReplyingTo] = useState<number | undefined>()
+  const navigate = useNavigate()
+  const currentUser = useAuthStore((s) => s.user)
+  const role = currentUser?.role ?? ''
+  const isMod = role === 'ROLE_MODERATOR' || role === 'ROLE_ADMIN'
+
+  const deleteOwnPost = useDeleteOwnPost()
+  const modDeletePost = useModDeletePost()
+  const deleteOwnComment = useDeleteOwnComment(postId)
+  const modDeleteComment = useModDeleteComment(postId)
+
+  const handleCommentDelete = (commentId: number) => {
+    if (isMod) {
+      modDeleteComment.mutate({ id: commentId })
+    } else {
+      deleteOwnComment.mutate({ commentId })
+    }
+  }
 
   const {
     data: postData,
@@ -81,6 +101,23 @@ export function PostDetailPage() {
             {post.authorUsername}
           </Link>{' '}
           {timeAgo(post.createdAt)}
+          {(currentUser?.username === post.authorUsername || isMod) && (
+            <>
+              {' | '}
+              <button
+                onClick={() => {
+                  const doDelete = isMod ? modDeletePost : deleteOwnPost
+                  doDelete.mutate(
+                    { id: post.id },
+                    { onSuccess: () => navigate('/') },
+                  )
+                }}
+                className="text-xs text-red-600 hover:underline cursor-pointer"
+              >
+                delete
+              </button>
+            </>
+          )}
         </div>
         {post.content && (
           <div className="text-sm mb-3 whitespace-pre-wrap">{post.content}</div>
@@ -122,7 +159,12 @@ export function PostDetailPage() {
           !commentsError &&
           comments?.map((comment) => (
             <div key={comment.id} className="border-t border-border/50">
-              <CommentItem comment={comment} />
+              <CommentItem
+                comment={comment}
+                currentUsername={currentUser?.username}
+                isMod={isMod}
+                onDelete={handleCommentDelete}
+              />
               {replyingTo === comment.id && (
                 <div className="mb-2" style={{ paddingLeft: `${(comment.depth + 1) * 16}px` }}>
                   <CommentForm

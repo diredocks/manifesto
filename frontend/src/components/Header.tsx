@@ -11,6 +11,8 @@ export function Header() {
 
   const currentUser = meData?.data ?? user
   const loggedIn = !!token
+  const role = currentUser?.role ?? ''
+  const isMod = role === 'ROLE_MODERATOR' || role === 'ROLE_ADMIN'
 
   const handleLogout = () => {
     logout()
@@ -33,6 +35,12 @@ export function Header() {
       <div className="ml-auto flex gap-2 items-center">
         {loggedIn ? (
           <>
+            {isMod && (
+              <>
+                <Link to="/mod" className="text-white visited:text-white">mod</Link>
+                <span className="text-white/70">|</span>
+              </>
+            )}
             <Link to={`/user/${currentUser?.username}`} className="text-white visited:text-white">
               {currentUser?.username}
             </Link>

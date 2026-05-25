@@ -9,6 +9,7 @@ import { LoginPage } from '@/pages/LoginPage'
 import { RegisterPage } from '@/pages/RegisterPage'
 import { PostDetailPage } from '@/pages/PostDetailPage'
 import { UserProfilePage } from '@/pages/UserProfilePage'
+import { ModPage } from '@/pages/ModPage'
 import { NotFoundPage } from '@/pages/NotFoundPage'
 
 export function AppRouter() {
@@ -21,6 +22,7 @@ export function AppRouter() {
         <Route path="item/:id" element={<PostDetailPage />} />
         <Route path="user/:username" element={<UserProfilePage />} />
         <Route path="submit" element={<ProtectedRoute><SubmitPage /></ProtectedRoute>} />
+        <Route path="mod" element={<ProtectedRoute><ModPage /></ProtectedRoute>} />
         <Route path="login" element={<LoginPage />} />
         <Route path="register" element={<RegisterPage />} />
         <Route path="*" element={<NotFoundPage />} />
