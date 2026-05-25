@@ -1,6 +1,6 @@
-import { useParams } from 'react-router-dom'
+import { useSearchParams, useParams } from 'react-router-dom'
 import { useUserPosts } from '@/features/profile/hooks'
-import { PostItem } from '@/components/PostItem'
+import { PostList } from '@/components/PostList'
 
 export function UserProfilePage() {
   const { username } = useParams<{ username: string }>()
@@ -18,28 +18,25 @@ export function UserProfilePage() {
 }
 
 function UserPosts({ username }: { username: string }) {
-  const { data, isLoading, isError, error } = useUserPosts(username)
+  const [searchParams] = useSearchParams()
+  const p = Number(searchParams.get('p') || '1')
+  const apiPage = p - 1
 
+  const { data, isLoading, isError, error } = useUserPosts(username, apiPage)
   const posts = data?.data?.content
+  const hasMore = posts && posts.length >= 20
+  const moreUrl = hasMore ? `/user/${username}?p=${p + 1}` : undefined
 
   return (
     <div className="mt-2">
       <h2 className="text-sm font-bold mb-2 border-t border-border pt-2">Posts</h2>
-      {isLoading && <div className="text-sm text-gray-500">Loading posts...</div>}
-      {isError && (
-        <div className="text-sm text-red-600">
-          {error instanceof Error ? error.message : 'Failed to load posts.'}
-        </div>
-      )}
-      {!isLoading && !isError && posts && posts.length > 0 ? (
-        <div>
-          {posts.map((post) => (
-            <PostItem key={post.id} post={post} />
-          ))}
-        </div>
-      ) : (
-        !isLoading && <div className="text-sm text-gray-500">No posts yet.</div>
-      )}
+      <PostList
+        posts={posts}
+        isLoading={isLoading}
+        isError={isError}
+        error={error}
+        moreUrl={moreUrl}
+      />
     </div>
   )
 }

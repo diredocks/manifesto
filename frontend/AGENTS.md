@@ -230,6 +230,7 @@ src/
 │   ├── providers/
 │   └── store/
 ├── features/
+│   ├── admin/
 │   ├── auth/
 │   ├── feed/
 │   ├── submit/
@@ -274,12 +275,47 @@ Pages:
  /register
  /user/:username
  /mod
+ /admin
 ```
 
 Protected:
 
 * /submit
 * /mod
+* /admin
+
+---
+
+## Pagination
+
+List pages use HN-style URL-based paging with a "More" link at the bottom. No infinite scroll, no accumulation — each page shows only its own posts.
+
+### URL convention
+
+- `?p=1` (or no param) → API `page=0` (first 20 posts)
+- `?p=2` → API `page=1` (posts 21–40)
+- `?p=N` → API `page=N-1`
+
+The `p` parameter is 1-indexed for the URL; converted to 0-indexed for the API.
+
+### Page pattern
+
+```tsx
+const [searchParams] = useSearchParams()
+const p = Number(searchParams.get('p') || '1')
+const apiPage = p - 1
+
+const { data, isLoading, isError, error } = useSomePosts(apiPage)
+const posts = data?.data
+const hasMore = posts && posts.length >= 20
+const moreUrl = hasMore ? `?p=${p + 1}` : undefined
+
+return <PostList posts={posts} isLoading={isLoading} isError={isError} error={error} moreUrl={moreUrl} />
+```
+
+- `PostList` receives `moreUrl?: string` and renders `<Link to={moreUrl}>More</Link>` when set
+- `hasMore` is determined by whether the current page returned a full page of results
+- No accumulation of posts across pages — each page is independent
 
 ---
 
@@ -386,6 +422,8 @@ refactor(api): standardize query keys
 * voting system
 * user profile
 * moderation basics
+* pagination (HN-style "More" button)
+* admin dashboard (user list + role management)
 
 Success:
 
@@ -395,7 +433,6 @@ Success:
 
 ### P1 — Community
 
-* pagination / infinite scroll
 * comment UX improvements
 * search
 * notifications
@@ -410,7 +447,6 @@ Success:
 * dark mode (Zustand optional)
 * keyboard shortcuts
 * optimistic updates
-* admin panel
 * mobile improvements
 
 ---
