@@ -38,7 +38,7 @@ spring:
 
   ai:
     openai:
-      api-key: ${DEEPSEEK_API_KEY:test-key}
+      api-key: dummy
 
 jwt:
   secret: e2e-test-secret-key-must-be-at-least-32-bytes-long-for-hs256
@@ -47,3 +47,4 @@ jwt:
 app:
   feed:
     top100-ttl-minutes: 1
+

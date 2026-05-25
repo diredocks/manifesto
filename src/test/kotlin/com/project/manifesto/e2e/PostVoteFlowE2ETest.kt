@@ -300,7 +300,7 @@ class PostVoteFlowE2ETest @Autowired constructor(
     @Test
     fun `moderator can delete any post, user cannot`() {
         val userToken = registerAndGetToken("rbac_user")
-        val modToken = registerAndGetToken("rbac_mod")
+        registerAndGetToken("rbac_mod")  // register then promote via DB
 
         // promote rbac_mod via DB, then re-login for fresh JWT
         val modUser = userRepository.findByUsername("rbac_mod")!!

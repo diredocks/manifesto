@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
 
 @Component
-@Profile("!test")
+@Profile("!test & !e2e")
 class AISummaryConsumer(
     private val aiService: AIService,
     private val tagService: TagService,

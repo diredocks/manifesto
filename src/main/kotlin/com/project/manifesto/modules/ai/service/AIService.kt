@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory
 import org.springframework.ai.chat.model.ChatModel
 import org.springframework.ai.chat.prompt.Prompt
 import org.springframework.ai.chat.messages.UserMessage
+import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Service
 import java.net.InetSocketAddress
 import java.net.URI
@@ -14,6 +15,7 @@ import java.net.http.HttpResponse
 import java.time.Duration
 
 @Service
+@Profile("!test & !e2e")
 class AIService(
     private val chatModel: ChatModel
 ) {
