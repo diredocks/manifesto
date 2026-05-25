@@ -1,4 +1,4 @@
-package com.project.manifesto.config
+package com.project.manifesto.common.config
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
