@@ -1,8 +1,8 @@
-import { useHotPosts } from '@/features/feed/hooks'
+import { useNewPosts } from '@/features/feed/hooks'
 import { PostList } from '@/components/PostList'
 
-export function HomePage() {
-  const { data, isLoading, isError, error } = useHotPosts()
+export function NewPage() {
+  const { data, isLoading, isError, error } = useNewPosts()
 
   return (
     <div>
