@@ -1,6 +1,7 @@
 package com.project.manifesto.modules.auth
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.project.manifesto.TestConfig
 import com.project.manifesto.modules.auth.dto.LoginRequest
 import com.project.manifesto.modules.auth.dto.RegisterRequest
 import com.project.manifesto.modules.user.entity.UserRole
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.context.annotation.Import
 import org.springframework.http.MediaType
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.test.context.ActiveProfiles
@@ -22,6 +24,7 @@ import org.springframework.test.web.servlet.post
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
+@Import(TestConfig::class)
 class AuthIntegrationTest @Autowired constructor(
     private val mockMvc: MockMvc,
     private val userRepository: UserRepository,
