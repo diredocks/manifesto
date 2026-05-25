@@ -1,6 +1,7 @@
 package com.project.manifesto.modules.ranking.service
 
 import com.project.manifesto.modules.submit.dto.PostResponse
+import com.project.manifesto.modules.submit.entity.PostType
 import com.project.manifesto.modules.submit.repository.PostRepository
 import com.project.manifesto.modules.submit.service.PostService
 import com.project.manifesto.modules.vote.repository.VoteRepository
@@ -18,16 +19,22 @@ class RankingService(
     private val voteRepository: VoteRepository
 ) {
 
-    fun getNewPosts(pageable: Pageable): List<PostResponse> {
-        return postService.listNewPosts(pageable).content
+    fun getNewPosts(pageable: Pageable, type: PostType? = null): List<PostResponse> {
+        val page = if (type != null) postService.listNewPostsByType(type, pageable)
+        else postService.listNewPosts(pageable)
+        return page.content
     }
 
-    fun getTopPosts(pageable: Pageable): List<PostResponse> {
-        return postService.listTopPosts(pageable).content
+    fun getTopPosts(pageable: Pageable, type: PostType? = null): List<PostResponse> {
+        val page = if (type != null) postService.listTopPostsByType(type, pageable)
+        else postService.listTopPosts(pageable)
+        return page.content
     }
 
-    fun getHotPosts(pageable: Pageable): List<PostResponse> {
-        return postService.listHotPosts(pageable).content
+    fun getHotPosts(pageable: Pageable, type: PostType? = null): List<PostResponse> {
+        val page = if (type != null) postService.listHotPostsByType(type, pageable)
+        else postService.listHotPosts(pageable)
+        return page.content
     }
 
     @Transactional

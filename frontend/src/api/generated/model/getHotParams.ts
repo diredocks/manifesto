@@ -4,8 +4,10 @@
  * OpenAPI definition
  * OpenAPI spec version: v0
  */
+import type { GetHotType } from './getHotType';
 
 export type GetHotParams = {
 page?: number;
 size?: number;
+type?: GetHotType;
 };

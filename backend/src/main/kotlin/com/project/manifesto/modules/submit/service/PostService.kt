@@ -60,14 +60,32 @@ class PostService(
     }
 
     @Transactional(readOnly = true)
+    fun listNewPostsByType(type: PostType, pageable: Pageable): Page<PostResponse> {
+        return postRepository.findByTypeAndDeletedFalseOrderByCreatedAtDesc(type, pageable)
+            .map { toPostResponse(it) }
+    }
+
+    @Transactional(readOnly = true)
     fun listTopPosts(pageable: Pageable): Page<PostResponse> {
         return postRepository.findByDeletedFalseOrderByScoreDesc(pageable)
             .map { toPostResponse(it) }
     }
 
     @Transactional(readOnly = true)
+    fun listTopPostsByType(type: PostType, pageable: Pageable): Page<PostResponse> {
+        return postRepository.findByTypeAndDeletedFalseOrderByScoreDesc(type, pageable)
+            .map { toPostResponse(it) }
+    }
+
+    @Transactional(readOnly = true)
     fun listHotPosts(pageable: Pageable): Page<PostResponse> {
         return postRepository.findByDeletedFalseOrderByHotScoreDesc(pageable)
+            .map { toPostResponse(it) }
+    }
+
+    @Transactional(readOnly = true)
+    fun listHotPostsByType(type: PostType, pageable: Pageable): Page<PostResponse> {
+        return postRepository.findByTypeAndDeletedFalseOrderByHotScoreDesc(type, pageable)
             .map { toPostResponse(it) }
     }
 

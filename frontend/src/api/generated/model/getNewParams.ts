@@ -4,8 +4,10 @@
  * OpenAPI definition
  * OpenAPI spec version: v0
  */
+import type { GetNewType } from './getNewType';
 
 export type GetNewParams = {
 page?: number;
 size?: number;
+type?: GetNewType;
 };

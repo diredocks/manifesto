@@ -1,6 +1,7 @@
 package com.project.manifesto.modules.submit.repository
 
 import com.project.manifesto.modules.submit.entity.Post
+import com.project.manifesto.modules.submit.entity.PostType
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.jpa.repository.JpaRepository
@@ -17,6 +18,12 @@ interface PostRepository : JpaRepository<Post, Long> {
     fun findByDeletedFalseOrderByHotScoreDesc(pageable: Pageable): Page<Post>
 
     fun findByDeletedFalseOrderByScoreDesc(pageable: Pageable): Page<Post>
+
+    fun findByTypeAndDeletedFalseOrderByCreatedAtDesc(type: PostType, pageable: Pageable): Page<Post>
+
+    fun findByTypeAndDeletedFalseOrderByHotScoreDesc(type: PostType, pageable: Pageable): Page<Post>
+
+    fun findByTypeAndDeletedFalseOrderByScoreDesc(type: PostType, pageable: Pageable): Page<Post>
 
     @Modifying
     @Query("UPDATE Post p SET p.commentCount = p.commentCount + 1 WHERE p.id = :postId")
