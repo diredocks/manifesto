@@ -7,7 +7,7 @@ import java.time.Duration
 import java.util.UUID
 
 @Service
-@Profile("!test")
+@Profile("!test & !generate")
 class RedisLockService(
     private val redisTemplate: StringRedisTemplate
 ) : LockService {

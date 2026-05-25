@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 
 @Component
-@Profile("!test")
+@Profile("!test & !generate")
 class PostVotedConsumer(
     private val rankingService: RankingService
 ) {

@@ -40,6 +40,7 @@ dependencies {
 
     // Database
     runtimeOnly("org.postgresql:postgresql")
+    runtimeOnly("com.h2database:h2")
     testImplementation("com.h2database:h2")
 
     // OpenAPI / Swagger

@@ -3,7 +3,7 @@ import { defineConfig } from 'orval'
 export default defineConfig({
   manifesto: {
     input: {
-      target: 'http://localhost:8080/api-docs',
+      target: 'openapi.json',
     },
     output: {
       mode: 'tags-split',

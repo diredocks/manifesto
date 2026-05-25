@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Profile
 import org.springframework.stereotype.Component
 
 @Component
-@Profile("!test")
+@Profile("!test & !generate")
 class RabbitEventPublisher(
     private val rabbitTemplate: RabbitTemplate
 ) : EventPublisher {
