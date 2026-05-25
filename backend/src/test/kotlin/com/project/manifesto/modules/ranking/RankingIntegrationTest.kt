@@ -51,8 +51,12 @@ class RankingIntegrationTest @Autowired constructor(
         return json["data"]["token"].asText()
     }
 
-    private fun createPost(token: String, title: String): Long {
-        val request = CreatePostRequest(title = title, type = PostType.ASK, content = "content")
+    private fun createPost(token: String, title: String, type: PostType = PostType.ASK): Long {
+        val request = if (type == PostType.LINK) {
+            CreatePostRequest(title = title, type = PostType.LINK, url = "https://example.com/$title")
+        } else {
+            CreatePostRequest(title = title, type = PostType.ASK, content = "content for $title")
+        }
         val result = mockMvc.post("/api/v1/posts") {
             contentType = MediaType.APPLICATION_JSON
             header("Authorization", "Bearer $token")
@@ -125,6 +129,103 @@ class RankingIntegrationTest @Autowired constructor(
         }
         mockMvc.get("/api/v1/ranking/top").andExpect {
             status { isOk() }
+        }
+    }
+
+    @Test
+    fun `new ranking with type ASK returns only ASK posts`() {
+        val token = createUserAndGetToken("askfilter1")
+        createPost(token, "Ask Post 1", PostType.ASK)
+        createPost(token, "Link Post", PostType.LINK)
+        createPost(token, "Ask Post 2", PostType.ASK)
+
+        mockMvc.get("/api/v1/ranking/new") {
+            param("type", "ASK")
+        }.andExpect {
+            status { isOk() }
+            jsonPath("$.data.length()") { value(2) }
+            jsonPath("$.data[0].type") { value("ASK") }
+            jsonPath("$.data[1].type") { value("ASK") }
+        }
+    }
+
+    @Test
+    fun `new ranking with type LINK returns only LINK posts`() {
+        val token = createUserAndGetToken("linkfilter1")
+        createPost(token, "Link A", PostType.LINK)
+        createPost(token, "Ask Q", PostType.ASK)
+        createPost(token, "Link B", PostType.LINK)
+
+        mockMvc.get("/api/v1/ranking/new") {
+            param("type", "LINK")
+        }.andExpect {
+            status { isOk() }
+            jsonPath("$.data.length()") { value(2) }
+            jsonPath("$.data[0].type") { value("LINK") }
+            jsonPath("$.data[1].type") { value("LINK") }
+        }
+    }
+
+    @Test
+    fun `hot ranking with type filter returns only matching posts`() {
+        val token = createUserAndGetToken("hotfilter1")
+        createPost(token, "Hot Ask", PostType.ASK)
+        createPost(token, "Hot Link", PostType.LINK)
+        createPost(token, "Another Ask", PostType.ASK)
+
+        mockMvc.get("/api/v1/ranking/hot") {
+            param("type", "ASK")
+        }.andExpect {
+            status { isOk() }
+            jsonPath("$.data.length()") { value(2) }
+            jsonPath("$.data[0].type") { value("ASK") }
+            jsonPath("$.data[1].type") { value("ASK") }
+        }
+    }
+
+    @Test
+    fun `top ranking with type filter returns only matching posts`() {
+        val token = createUserAndGetToken("topfilter1")
+        createPost(token, "Top Link 1", PostType.LINK)
+        createPost(token, "Top Ask", PostType.ASK)
+        createPost(token, "Top Link 2", PostType.LINK)
+
+        mockMvc.get("/api/v1/ranking/top") {
+            param("type", "LINK")
+        }.andExpect {
+            status { isOk() }
+            jsonPath("$.data.length()") { value(2) }
+            jsonPath("$.data[0].type") { value("LINK") }
+            jsonPath("$.data[1].type") { value("LINK") }
+        }
+    }
+
+    @Test
+    fun `type filter with pagination works`() {
+        val token = createUserAndGetToken("askpage1")
+        repeat(5) { i -> createPost(token, "Ask Page $i", PostType.ASK) }
+
+        mockMvc.get("/api/v1/ranking/new") {
+            param("type", "ASK")
+            param("page", "0")
+            param("size", "3")
+        }.andExpect {
+            status { isOk() }
+            jsonPath("$.data.length()") { value(3) }
+            jsonPath("$.data[0].type") { value("ASK") }
+        }
+    }
+
+    @Test
+    fun `no type filter returns all posts`() {
+        val token = createUserAndGetToken("nofilter1")
+        createPost(token, "Ask 1", PostType.ASK)
+        createPost(token, "Link 1", PostType.LINK)
+        createPost(token, "Ask 2", PostType.ASK)
+
+        mockMvc.get("/api/v1/ranking/new").andExpect {
+            status { isOk() }
+            jsonPath("$.data.length()") { value(3) }
         }
     }
 }
