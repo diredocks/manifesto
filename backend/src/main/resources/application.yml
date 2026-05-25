@@ -25,6 +25,11 @@ jwt:
   expiration-ms: 86400000
 
 app:
+  admin:
+    enabled: ${ADMIN_AUTO_CREATE:true}
+    username: ${ADMIN_USERNAME:admin}
+    email: ${ADMIN_EMAIL:admin@manifesto.local}
+    password: ${ADMIN_PASSWORD:admin}
 
 springdoc:
   api-docs:
