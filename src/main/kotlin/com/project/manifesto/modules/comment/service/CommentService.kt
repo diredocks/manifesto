@@ -27,7 +27,7 @@ class CommentService(
             .orElseThrow { EntityNotFoundException("Post not found: $postId") }
         if (post.deleted) throw EntityNotFoundException("Post not found: $postId")
 
-        var parentComment: Comment? = null
+        var parentComment: Comment?
         var depth = 0
 
         if (request.parentId != null) {
@@ -66,23 +66,16 @@ class CommentService(
     @Transactional(readOnly = true)
     fun getCommentTree(postId: Long): List<CommentResponse> {
         val allComments = commentRepository.findByPostIdAndDeletedFalseOrderByCreatedAtAsc(postId)
-        val commentMap = allComments.associate { it.id to toResponse(it) }.toMutableMap()
+        val responses = allComments.map { toResponse(it) }
+        val childrenByParent = responses.groupBy { it.parentId }
 
-        for (comment in allComments) {
-            val response = commentMap[comment.id] ?: continue
-            val pid = comment.parentId
-            if (pid != null) {
-                val parent = commentMap[pid]
-                if (parent != null) {
-                    val updated = parent.copy(children = parent.children + response)
-                    commentMap[comment.id] = response
-                    commentMap[pid] = updated
-                }
+        fun buildTree(parentId: Long?): List<CommentResponse> {
+            return (childrenByParent[parentId] ?: emptyList()).map { child ->
+                child.copy(children = buildTree(child.id))
             }
         }
 
-        return commentMap.values.filter { it.parentId == null }
-            .sortedBy { it.createdAt }
+        return buildTree(null)
     }
 
     @Transactional

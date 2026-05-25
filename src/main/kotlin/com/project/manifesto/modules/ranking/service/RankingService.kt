@@ -8,6 +8,7 @@ import com.project.manifesto.modules.vote.repository.VoteRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.data.redis.core.StringRedisTemplate
 import org.springframework.stereotype.Service
 import java.time.Duration
@@ -53,6 +54,7 @@ class RankingService(
         return posts
     }
 
+    @Transactional
     fun recalculateScores() {
         val posts = postRepository.findByDeletedFalseOrderByHotScoreDesc(PageRequest.of(0, 200))
         for (post in posts) {
@@ -64,6 +66,7 @@ class RankingService(
         cacheHotPosts(posts.content.map { postService.toPostResponse(it) })
     }
 
+    @Transactional
     fun recalculatePostScore(postId: Long) {
         val post = postRepository.findById(postId).orElse(null) ?: return
         val score = voteRepository.countByPostId(postId)
