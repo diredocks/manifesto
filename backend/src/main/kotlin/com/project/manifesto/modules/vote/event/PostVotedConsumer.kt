@@ -15,5 +15,6 @@ class PostVotedConsumer(
     @RabbitListener(queues = [RabbitConfig.QUEUE_POST_VOTED])
     fun handlePostVoted(event: PostVotedEvent) {
         rankingService.recalculatePostScore(event.postId)
+        rankingService.evictCache()
     }
 }

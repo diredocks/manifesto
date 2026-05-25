@@ -1,10 +1,10 @@
 package com.project.manifesto.modules.vote.service
 
-import com.project.manifesto.infra.rabbitmq.EventPublisher
 import com.project.manifesto.infra.redis.LockService
 import com.project.manifesto.modules.vote.entity.Vote
 import com.project.manifesto.modules.vote.event.PostVotedEvent
 import com.project.manifesto.modules.vote.repository.VoteRepository
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional
 class VoteService(
     private val voteRepository: VoteRepository,
     private val lockService: LockService,
-    private val eventPublisher: EventPublisher
+    private val publisher: ApplicationEventPublisher
 ) {
 
     @Transactional
@@ -25,9 +25,8 @@ class VoteService(
             if (voteRepository.existsByUserIdAndPostId(userId, postId)) {
                 return true
             }
-            val vote = Vote(userId = userId, postId = postId)
-            voteRepository.save(vote)
-            eventPublisher.publishPostVoted(PostVotedEvent(postId, userId, voted = true))
+            voteRepository.save(Vote(userId = userId, postId = postId))
+            publisher.publishEvent(PostVotedEvent(postId, userId, voted = true))
             true
         } finally {
             lockService.unlock(lockToken)
@@ -42,7 +41,7 @@ class VoteService(
 
         return try {
             voteRepository.deleteByUserIdAndPostId(userId, postId)
-            eventPublisher.publishPostVoted(PostVotedEvent(postId, userId, voted = false))
+            publisher.publishEvent(PostVotedEvent(postId, userId, voted = false))
             true
         } finally {
             lockService.unlock(lockToken)

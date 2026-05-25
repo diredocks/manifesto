@@ -1,6 +1,5 @@
 package com.project.manifesto.modules.submit.service
 
-import com.project.manifesto.infra.rabbitmq.EventPublisher
 import com.project.manifesto.modules.ai.service.TagService
 import com.project.manifesto.modules.submit.dto.CreatePostRequest
 import com.project.manifesto.modules.submit.dto.PostDetailResponse
@@ -12,19 +11,19 @@ import com.project.manifesto.modules.submit.repository.PostRepository
 import com.project.manifesto.modules.user.repository.UserRepository
 import jakarta.persistence.EntityNotFoundException
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.data.redis.core.StringRedisTemplate
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import org.springframework.transaction.support.TransactionSynchronizationManager
 import java.time.Instant
 
 @Service
 class PostService(
     private val postRepository: PostRepository,
     private val userRepository: UserRepository,
-    private val eventPublisher: EventPublisher,
+    private val publisher: ApplicationEventPublisher,
     private val tagService: TagService,
     @Autowired(required = false) private val redisTemplate: StringRedisTemplate?
 ) {
@@ -50,13 +49,7 @@ class PostService(
             hotScore = calculateInitialHotScore()
         )
         val saved = postRepository.save(post)
-        TransactionSynchronizationManager.registerSynchronization(object : org.springframework.transaction.support.TransactionSynchronization {
-            override fun afterCommit() {
-                eventPublisher.publishPostCreated(
-                    PostCreatedEvent(saved.id, saved.title, saved.url, saved.content, saved.type.name)
-                )
-            }
-        })
+        publisher.publishEvent(PostCreatedEvent(saved.id, saved.title, saved.url, saved.content, saved.type.name))
         return toDetailResponse(saved)
     }
 

@@ -1,6 +1,5 @@
 package com.project.manifesto.modules.comment.service
 
-import com.project.manifesto.infra.rabbitmq.EventPublisher
 import com.project.manifesto.modules.comment.dto.CommentResponse
 import com.project.manifesto.modules.comment.dto.CreateCommentRequest
 import com.project.manifesto.modules.comment.entity.Comment
@@ -10,6 +9,7 @@ import com.project.manifesto.modules.notification.event.NotificationEvent
 import com.project.manifesto.modules.submit.repository.PostRepository
 import com.project.manifesto.modules.user.repository.UserRepository
 import jakarta.persistence.EntityNotFoundException
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -18,7 +18,7 @@ class CommentService(
     private val commentRepository: CommentRepository,
     private val postRepository: PostRepository,
     private val userRepository: UserRepository,
-    private val eventPublisher: EventPublisher
+    private val publisher: ApplicationEventPublisher
 ) {
 
     @Transactional
@@ -27,18 +27,17 @@ class CommentService(
             .orElseThrow { EntityNotFoundException("Post not found: $postId") }
         if (post.deleted) throw EntityNotFoundException("Post not found: $postId")
 
-        var parentComment: Comment?
         var depth = 0
 
         if (request.parentId != null) {
-            parentComment = commentRepository.findById(request.parentId)
+            val parentComment = commentRepository.findById(request.parentId)
                 .orElseThrow { EntityNotFoundException("Parent comment not found: ${request.parentId}") }
             if (parentComment.postId != postId) {
                 throw IllegalArgumentException("Parent comment does not belong to this post")
             }
             depth = parentComment.depth + 1
 
-            eventPublisher.publishNotification(
+            publisher.publishEvent(
                 NotificationEvent(
                     receiverId = parentComment.authorId,
                     type = NotificationType.COMMENT_REPLY,
