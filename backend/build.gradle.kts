@@ -29,8 +29,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-amqp")
 
     // Spring AI
-    implementation(platform("org.springframework.ai:spring-ai-bom:1.0.0-M5"))
-    implementation("org.springframework.ai:spring-ai-openai-spring-boot-starter")
+    implementation(platform("org.springframework.ai:spring-ai-bom:1.1.7"))
+    implementation("org.springframework.ai:spring-ai-starter-model-deepseek")
     // Kotlin
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")

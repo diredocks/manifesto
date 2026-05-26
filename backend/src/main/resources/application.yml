@@ -27,7 +27,7 @@ spring:
     password: ${RABBITMQ_PASSWORD:guest}
 
   ai:
-    openai:
+    deepseek:
       api-key: ${DEEPSEEK_API_KEY}
       base-url: ${DEEPSEEK_BASE_URL:https://api.deepseek.com}
       chat:

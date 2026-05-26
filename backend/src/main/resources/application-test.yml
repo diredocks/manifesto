@@ -17,7 +17,7 @@ spring:
       - org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration
 
   ai:
-    openai:
+    deepseek:
       api-key: test-dummy-key
 
 app:
