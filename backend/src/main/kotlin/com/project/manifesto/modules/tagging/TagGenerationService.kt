@@ -1,4 +1,4 @@
-package com.project.manifesto.infra.ai
+package com.project.manifesto.modules.tagging
 
 import com.project.manifesto.modules.submit.entity.Post
 import org.slf4j.LoggerFactory

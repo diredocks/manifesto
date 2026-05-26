@@ -1,6 +1,6 @@
 package com.project.manifesto.modules.submit.messaging
 
-import com.project.manifesto.infra.ai.TagGenerationService
+import com.project.manifesto.modules.tagging.TagGenerationService
 import com.project.manifesto.modules.submit.repository.PostRepository
 import org.slf4j.LoggerFactory
 import org.springframework.amqp.rabbit.annotation.RabbitListener
