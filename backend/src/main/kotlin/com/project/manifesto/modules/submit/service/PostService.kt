@@ -5,9 +5,11 @@ import com.project.manifesto.modules.submit.dto.PostDetailResponse
 import com.project.manifesto.modules.submit.dto.PostResponse
 import com.project.manifesto.modules.submit.entity.Post
 import com.project.manifesto.modules.submit.entity.PostType
+import com.project.manifesto.modules.submit.event.PostCreatedEvent
 import com.project.manifesto.modules.submit.repository.PostRepository
 import com.project.manifesto.modules.user.repository.UserRepository
 import jakarta.persistence.EntityNotFoundException
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.Pageable
 import org.springframework.stereotype.Service
@@ -17,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional
 class PostService(
     private val postRepository: PostRepository,
     private val userRepository: UserRepository,
+    private val eventPublisher: ApplicationEventPublisher,
 ) {
     @Transactional
     fun createPost(
@@ -49,6 +52,7 @@ class PostService(
                 hotScore = calculateInitialHotScore(),
             )
         val saved = postRepository.save(post)
+        eventPublisher.publishEvent(PostCreatedEvent(postId = saved.id))
         return toDetailResponse(saved)
     }
 
@@ -182,6 +186,7 @@ class PostService(
             url = post.url,
             content = post.content,
             summary = post.summary,
+            tags = post.tags,
             score = post.score,
             hotScore = post.hotScore,
             commentCount = post.commentCount,
@@ -202,6 +207,7 @@ class PostService(
             url = post.url,
             content = post.content,
             summary = post.summary,
+            tags = post.tags,
             score = post.score,
             hotScore = post.hotScore,
             commentCount = post.commentCount,

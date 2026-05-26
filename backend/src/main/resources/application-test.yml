@@ -12,8 +12,18 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.H2Dialect
 
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.amqp.RabbitAutoConfiguration
+
+  ai:
+    openai:
+      api-key: test-dummy-key
+
 app:
   admin:
+    enabled: false
+  tagging:
     enabled: false
 
 jwt:

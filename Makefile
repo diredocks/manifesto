@@ -1,4 +1,4 @@
-.PHONY: init clean-db clean run-backend run-frontend
+.PHONY: init clean-db clean-mq clean run-backend run-frontend
 
 PG_HOST ?= localhost
 PG_PORT ?= 5432
@@ -24,7 +24,13 @@ clean-db:
 	done
 	@echo "Databases recreated."
 
-clean: clean-db
+clean-mq:
+	@echo "Purging RabbitMQ queues..."
+	@for q in post.tagging; do \
+		sudo rabbitmqctl purge_queue "$$q" 2>/dev/null && echo "  $$q purged." || echo "  Failed to purge $$q (try running with sudo)"; \
+	done
+
+clean: clean-db clean-mq
 	@echo "All services cleaned."
 
 run-backend:

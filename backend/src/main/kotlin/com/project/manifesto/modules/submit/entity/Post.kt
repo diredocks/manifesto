@@ -1,7 +1,9 @@
 package com.project.manifesto.modules.submit.entity
 
 import com.project.manifesto.common.entity.BaseEntity
+import com.project.manifesto.common.entity.StringListConverter
 import jakarta.persistence.Column
+import jakarta.persistence.Convert
 import jakarta.persistence.Entity
 import jakarta.persistence.EnumType
 import jakarta.persistence.Enumerated
@@ -45,4 +47,7 @@ class Post(
     var type: PostType = PostType.LINK,
     @Column(nullable = false)
     var deleted: Boolean = false,
+    @Convert(converter = StringListConverter::class)
+    @Column(columnDefinition = "TEXT")
+    var tags: List<String>? = null,
 ) : BaseEntity()

@@ -8,6 +8,7 @@ data class PostResponse(
     val url: String?,
     val content: String?,
     val summary: String?,
+    val tags: List<String>?,
     val score: Int,
     val hotScore: Double,
     val commentCount: Int,

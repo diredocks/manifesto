@@ -26,6 +26,11 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-validation")
+    implementation("org.springframework.boot:spring-boot-starter-amqp")
+
+    // Spring AI
+    implementation(platform("org.springframework.ai:spring-ai-bom:1.0.0-M5"))
+    implementation("org.springframework.ai:spring-ai-openai-spring-boot-starter")
     // Kotlin
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("org.jetbrains.kotlin:kotlin-reflect")

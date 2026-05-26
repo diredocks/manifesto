@@ -20,6 +20,20 @@ spring:
         format_sql: true
     show-sql: false
 
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME:guest}
+    password: ${RABBITMQ_PASSWORD:guest}
+
+  ai:
+    openai:
+      api-key: ${DEEPSEEK_API_KEY}
+      base-url: ${DEEPSEEK_BASE_URL:https://api.deepseek.com}
+      chat:
+        options:
+          model: ${DEEPSEEK_MODEL:deepseek-chat}
+
 jwt:
   secret: ${JWT_SECRET:manifesto-jwt-secret-key-must-be-at-least-32-bytes-long-for-hs256}
   expiration-ms: 86400000
@@ -30,6 +44,8 @@ app:
     username: ${ADMIN_USERNAME:admin}
     email: ${ADMIN_EMAIL:admin@manifesto.local}
     password: ${ADMIN_PASSWORD:admin}
+  tagging:
+    enabled: ${TAGGING_ENABLED:true}
 
 springdoc:
   api-docs:
