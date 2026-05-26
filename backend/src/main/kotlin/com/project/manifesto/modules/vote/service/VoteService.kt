@@ -2,6 +2,8 @@ package com.project.manifesto.modules.vote.service
 
 import com.project.manifesto.modules.comment.repository.CommentRepository
 import com.project.manifesto.modules.ranking.service.RankingService
+import com.project.manifesto.modules.submit.repository.PostRepository
+import com.project.manifesto.modules.user.repository.UserRepository
 import com.project.manifesto.modules.vote.entity.Vote
 import com.project.manifesto.modules.vote.repository.VoteRepository
 import jakarta.persistence.EntityNotFoundException
@@ -12,7 +14,9 @@ import org.springframework.transaction.annotation.Transactional
 class VoteService(
     private val voteRepository: VoteRepository,
     private val rankingService: RankingService,
-    private val commentRepository: CommentRepository
+    private val commentRepository: CommentRepository,
+    private val postRepository: PostRepository,
+    private val userRepository: UserRepository
 ) {
 
     @Transactional
@@ -22,6 +26,12 @@ class VoteService(
         }
         voteRepository.save(Vote(userId = userId, postId = postId))
         rankingService.recalculatePostScore(postId)
+        val post = postRepository.findById(postId)
+            .orElseThrow { EntityNotFoundException("Post not found: $postId") }
+        val author = userRepository.findById(post.authorId)
+            .orElseThrow { EntityNotFoundException("User not found: ${post.authorId}") }
+        author.karma += 1
+        userRepository.save(author)
         return true
     }
 
@@ -29,6 +39,14 @@ class VoteService(
     fun removeVote(userId: Long, postId: Long): Boolean {
         voteRepository.deleteByUserIdAndPostId(userId, postId)
         rankingService.recalculatePostScore(postId)
+        val post = postRepository.findById(postId)
+            .orElseThrow { EntityNotFoundException("Post not found: $postId") }
+        val author = userRepository.findById(post.authorId)
+            .orElseThrow { EntityNotFoundException("User not found: ${post.authorId}") }
+        if (author.karma > 0) {
+            author.karma -= 1
+            userRepository.save(author)
+        }
         return true
     }
 
@@ -52,6 +70,10 @@ class VoteService(
             .orElseThrow { EntityNotFoundException("Comment not found: $commentId") }
         comment.score += 1
         commentRepository.save(comment)
+        val author = userRepository.findById(comment.authorId)
+            .orElseThrow { EntityNotFoundException("User not found: ${comment.authorId}") }
+        author.karma += 1
+        userRepository.save(author)
         return true
     }
 
@@ -63,6 +85,12 @@ class VoteService(
         if (comment.score > 0) {
             comment.score -= 1
             commentRepository.save(comment)
+        }
+        val author = userRepository.findById(comment.authorId)
+            .orElseThrow { EntityNotFoundException("User not found: ${comment.authorId}") }
+        if (author.karma > 0) {
+            author.karma -= 1
+            userRepository.save(author)
         }
         return true
     }
