@@ -1,4 +1,4 @@
-package com.project.manifesto.infra.config
+package com.project.manifesto.common.config
 
 import org.springframework.ai.chat.client.ChatClient
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty

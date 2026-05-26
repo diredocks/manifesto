@@ -1,6 +1,5 @@
-package com.project.manifesto.infra.config
+package com.project.manifesto.common.config
 
-import com.project.manifesto.modules.submit.messaging.PostTaggingMessage
 import org.springframework.amqp.core.Binding
 import org.springframework.amqp.core.BindingBuilder
 import org.springframework.amqp.core.DirectExchange
