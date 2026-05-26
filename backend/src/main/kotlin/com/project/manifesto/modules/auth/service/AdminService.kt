@@ -7,6 +7,7 @@ import com.project.manifesto.modules.user.repository.UserRepository
 import jakarta.persistence.EntityNotFoundException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.Instant
 
 @Service
 class AdminService(
@@ -44,11 +45,30 @@ class AdminService(
         return saved.toListItem()
     }
 
+    @Transactional
+    fun banUser(userId: Long, durationHours: Long): UserListItem {
+        require(durationHours > 0) { "Ban duration must be positive" }
+        val user = userRepository.findById(userId)
+            .orElseThrow { EntityNotFoundException("User not found: $userId") }
+        require(user.role != UserRole.ROLE_ADMIN) { "Cannot ban an admin" }
+        user.bannedUntil = Instant.now().plusSeconds(durationHours * 3600)
+        return userRepository.save(user).toListItem()
+    }
+
+    @Transactional
+    fun unbanUser(userId: Long): UserListItem {
+        val user = userRepository.findById(userId)
+            .orElseThrow { EntityNotFoundException("User not found: $userId") }
+        user.bannedUntil = null
+        return userRepository.save(user).toListItem()
+    }
+
     private fun User.toListItem() = UserListItem(
         id = id,
         username = username,
         email = email,
         karma = karma,
-        role = role.name
+        role = role.name,
+        bannedUntil = bannedUntil
     )
 }

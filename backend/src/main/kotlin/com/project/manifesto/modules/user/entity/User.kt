@@ -10,6 +10,7 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.Index
 import jakarta.persistence.Table
+import java.time.Instant
 
 @Entity
 @Table(
@@ -38,5 +39,11 @@ class User(
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
-    var role: UserRole = UserRole.ROLE_USER
-) : BaseEntity()
+    var role: UserRole = UserRole.ROLE_USER,
+
+    @Column(name = "banned_until")
+    var bannedUntil: Instant? = null
+) : BaseEntity() {
+
+    fun isBanned(): Boolean = bannedUntil != null && bannedUntil!!.isAfter(Instant.now())
+}

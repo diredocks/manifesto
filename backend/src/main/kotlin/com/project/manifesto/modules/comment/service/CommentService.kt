@@ -25,6 +25,10 @@ class CommentService(
 
     @Transactional
     fun createComment(authorId: Long, postId: Long, request: CreateCommentRequest): CommentResponse {
+        val author = userRepository.findById(authorId)
+            .orElseThrow { EntityNotFoundException("User not found: $authorId") }
+        require(!author.isBanned()) { "You are banned and cannot comment" }
+
         val post = postRepository.findById(postId)
             .orElseThrow { EntityNotFoundException("Post not found: $postId") }
         if (post.deleted) throw EntityNotFoundException("Post not found: $postId")

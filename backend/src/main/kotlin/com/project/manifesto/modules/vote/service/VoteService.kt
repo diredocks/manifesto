@@ -21,6 +21,10 @@ class VoteService(
 
     @Transactional
     fun upvote(userId: Long, postId: Long): Boolean {
+        val user = userRepository.findById(userId)
+            .orElseThrow { EntityNotFoundException("User not found: $userId") }
+        require(!user.isBanned()) { "You are banned and cannot vote" }
+
         if (voteRepository.existsByUserIdAndPostId(userId, postId)) {
             return true
         }
@@ -62,6 +66,10 @@ class VoteService(
 
     @Transactional
     fun upvoteComment(userId: Long, commentId: Long): Boolean {
+        val user = userRepository.findById(userId)
+            .orElseThrow { EntityNotFoundException("User not found: $userId") }
+        require(!user.isBanned()) { "You are banned and cannot vote" }
+
         if (voteRepository.existsByUserIdAndCommentId(userId, commentId)) {
             return true
         }

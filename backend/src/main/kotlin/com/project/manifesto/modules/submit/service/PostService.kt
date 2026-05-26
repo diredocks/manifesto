@@ -21,6 +21,10 @@ class PostService(
 
     @Transactional
     fun createPost(authorId: Long, request: CreatePostRequest): PostDetailResponse {
+        val author = userRepository.findById(authorId)
+            .orElseThrow { EntityNotFoundException("User not found: $authorId") }
+        require(!author.isBanned()) { "You are banned and cannot post" }
+
         require(request.type == PostType.LINK || request.type == PostType.ASK) {
             "Invalid post type"
         }

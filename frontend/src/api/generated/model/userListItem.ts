@@ -11,4 +11,5 @@ export interface UserListItem {
   email: string;
   karma: number;
   role: string;
+  bannedUntil?: string;
 }
