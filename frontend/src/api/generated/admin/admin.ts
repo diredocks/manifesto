@@ -100,7 +100,7 @@ export const useChangeUserRole = <TError = unknown,
     /**
  * @summary List all users (admin only)
  */
-export const listUsers = (
+export const listUsers1 = (
     
  signal?: AbortSignal
 ) => {
@@ -115,69 +115,69 @@ export const listUsers = (
 
 
 
-export const getListUsersQueryKey = () => {
+export const getListUsers1QueryKey = () => {
     return [
     `/api/v1/admin/users`
     ] as const;
     }
 
     
-export const getListUsersQueryOptions = <TData = Awaited<ReturnType<typeof listUsers>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listUsers>>, TError, TData>>, }
+export const getListUsers1QueryOptions = <TData = Awaited<ReturnType<typeof listUsers1>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listUsers1>>, TError, TData>>, }
 ) => {
 
 const {query: queryOptions} = options ?? {};
 
-  const queryKey =  queryOptions?.queryKey ?? getListUsersQueryKey();
+  const queryKey =  queryOptions?.queryKey ?? getListUsers1QueryKey();
 
   
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof listUsers>>> = ({ signal }) => listUsers(signal);
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listUsers1>>> = ({ signal }) => listUsers1(signal);
 
       
 
       
 
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listUsers>>, TError, TData> & { queryKey: DataTag<QueryKey, TData> }
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listUsers1>>, TError, TData> & { queryKey: DataTag<QueryKey, TData> }
 }
 
-export type ListUsersQueryResult = NonNullable<Awaited<ReturnType<typeof listUsers>>>
-export type ListUsersQueryError = unknown
+export type ListUsers1QueryResult = NonNullable<Awaited<ReturnType<typeof listUsers1>>>
+export type ListUsers1QueryError = unknown
 
 
-export function useListUsers<TData = Awaited<ReturnType<typeof listUsers>>, TError = unknown>(
-  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof listUsers>>, TError, TData>> & Pick<
+export function useListUsers1<TData = Awaited<ReturnType<typeof listUsers1>>, TError = unknown>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof listUsers1>>, TError, TData>> & Pick<
         DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof listUsers>>,
+          Awaited<ReturnType<typeof listUsers1>>,
           TError,
-          Awaited<ReturnType<typeof listUsers>>
+          Awaited<ReturnType<typeof listUsers1>>
         > , 'initialData'
       >, }
  , queryClient?: QueryClient
   ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> }
-export function useListUsers<TData = Awaited<ReturnType<typeof listUsers>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listUsers>>, TError, TData>> & Pick<
+export function useListUsers1<TData = Awaited<ReturnType<typeof listUsers1>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listUsers1>>, TError, TData>> & Pick<
         UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof listUsers>>,
+          Awaited<ReturnType<typeof listUsers1>>,
           TError,
-          Awaited<ReturnType<typeof listUsers>>
+          Awaited<ReturnType<typeof listUsers1>>
         > , 'initialData'
       >, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> }
-export function useListUsers<TData = Awaited<ReturnType<typeof listUsers>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listUsers>>, TError, TData>>, }
+export function useListUsers1<TData = Awaited<ReturnType<typeof listUsers1>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listUsers1>>, TError, TData>>, }
  , queryClient?: QueryClient
   ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> }
 /**
  * @summary List all users (admin only)
  */
 
-export function useListUsers<TData = Awaited<ReturnType<typeof listUsers>>, TError = unknown>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listUsers>>, TError, TData>>, }
+export function useListUsers1<TData = Awaited<ReturnType<typeof listUsers1>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listUsers1>>, TError, TData>>, }
  , queryClient?: QueryClient 
  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> } {
 
-  const queryOptions = getListUsersQueryOptions(options)
+  const queryOptions = getListUsers1QueryOptions(options)
 
   const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> };
 

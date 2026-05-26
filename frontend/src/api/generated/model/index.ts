@@ -21,6 +21,7 @@ export * from './apiResponseUserInfoResponse';
 export * from './apiResponseUserListItem';
 export * from './apiResponseUserProfileResponse';
 export * from './authResponse';
+export * from './banUserParams';
 export * from './changeUserRoleParams';
 export * from './commentResponse';
 export * from './createCommentRequest';

@@ -1,8 +1,8 @@
-import { useListUsers, useChangeUserRole } from '@/api/generated/admin/admin'
+import { useListUsers1, useChangeUserRole } from '@/api/generated/admin/admin'
 import { useQueryClient } from '@tanstack/react-query'
 
 export function useAdminUsers() {
-  return useListUsers()
+  return useListUsers1()
 }
 
 export function useChangeRole() {

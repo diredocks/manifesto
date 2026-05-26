@@ -157,190 +157,6 @@ export const useRemoveVote = <TError = unknown,
       return useMutation(mutationOptions, queryClient);
     }
     /**
- * @summary Check if current user has voted
- */
-export const voteStatus = (
-    postId: number,
- signal?: AbortSignal
-) => {
-      
-      
-      return customInstance<ApiResponseBoolean>(
-      {url: `/api/v1/posts/${postId}/vote-status`, method: 'GET', signal
-    },
-      );
-    }
-  
-
-
-
-export const getVoteStatusQueryKey = (postId?: number,) => {
-    return [
-    `/api/v1/posts/${postId}/vote-status`
-    ] as const;
-    }
-
-    
-export const getVoteStatusQueryOptions = <TData = Awaited<ReturnType<typeof voteStatus>>, TError = unknown>(postId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof voteStatus>>, TError, TData>>, }
-) => {
-
-const {query: queryOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getVoteStatusQueryKey(postId);
-
-  
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof voteStatus>>> = ({ signal }) => voteStatus(postId, signal);
-
-      
-
-      
-
-   return  { queryKey, queryFn, enabled: !!(postId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof voteStatus>>, TError, TData> & { queryKey: DataTag<QueryKey, TData> }
-}
-
-export type VoteStatusQueryResult = NonNullable<Awaited<ReturnType<typeof voteStatus>>>
-export type VoteStatusQueryError = unknown
-
-
-export function useVoteStatus<TData = Awaited<ReturnType<typeof voteStatus>>, TError = unknown>(
- postId: number, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof voteStatus>>, TError, TData>> & Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof voteStatus>>,
-          TError,
-          Awaited<ReturnType<typeof voteStatus>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> }
-export function useVoteStatus<TData = Awaited<ReturnType<typeof voteStatus>>, TError = unknown>(
- postId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof voteStatus>>, TError, TData>> & Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof voteStatus>>,
-          TError,
-          Awaited<ReturnType<typeof voteStatus>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> }
-export function useVoteStatus<TData = Awaited<ReturnType<typeof voteStatus>>, TError = unknown>(
- postId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof voteStatus>>, TError, TData>>, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> }
-/**
- * @summary Check if current user has voted
- */
-
-export function useVoteStatus<TData = Awaited<ReturnType<typeof voteStatus>>, TError = unknown>(
- postId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof voteStatus>>, TError, TData>>, }
- , queryClient?: QueryClient 
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> } {
-
-  const queryOptions = getVoteStatusQueryOptions(postId,options)
-
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> };
-
-  query.queryKey = queryOptions.queryKey ;
-
-  return query;
-}
-
-
-
-
-/**
- * @summary Get vote count for a post
- */
-export const voteCount = (
-    postId: number,
- signal?: AbortSignal
-) => {
-      
-      
-      return customInstance<ApiResponseInteger>(
-      {url: `/api/v1/posts/${postId}/vote-count`, method: 'GET', signal
-    },
-      );
-    }
-  
-
-
-
-export const getVoteCountQueryKey = (postId?: number,) => {
-    return [
-    `/api/v1/posts/${postId}/vote-count`
-    ] as const;
-    }
-
-    
-export const getVoteCountQueryOptions = <TData = Awaited<ReturnType<typeof voteCount>>, TError = unknown>(postId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof voteCount>>, TError, TData>>, }
-) => {
-
-const {query: queryOptions} = options ?? {};
-
-  const queryKey =  queryOptions?.queryKey ?? getVoteCountQueryKey(postId);
-
-  
-
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof voteCount>>> = ({ signal }) => voteCount(postId, signal);
-
-      
-
-      
-
-   return  { queryKey, queryFn, enabled: !!(postId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof voteCount>>, TError, TData> & { queryKey: DataTag<QueryKey, TData> }
-}
-
-export type VoteCountQueryResult = NonNullable<Awaited<ReturnType<typeof voteCount>>>
-export type VoteCountQueryError = unknown
-
-
-export function useVoteCount<TData = Awaited<ReturnType<typeof voteCount>>, TError = unknown>(
- postId: number, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof voteCount>>, TError, TData>> & Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof voteCount>>,
-          TError,
-          Awaited<ReturnType<typeof voteCount>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> }
-export function useVoteCount<TData = Awaited<ReturnType<typeof voteCount>>, TError = unknown>(
- postId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof voteCount>>, TError, TData>> & Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof voteCount>>,
-          TError,
-          Awaited<ReturnType<typeof voteCount>>
-        > , 'initialData'
-      >, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> }
-export function useVoteCount<TData = Awaited<ReturnType<typeof voteCount>>, TError = unknown>(
- postId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof voteCount>>, TError, TData>>, }
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> }
-/**
- * @summary Get vote count for a post
- */
-
-export function useVoteCount<TData = Awaited<ReturnType<typeof voteCount>>, TError = unknown>(
- postId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof voteCount>>, TError, TData>>, }
- , queryClient?: QueryClient 
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> } {
-
-  const queryOptions = getVoteCountQueryOptions(postId,options)
-
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> };
-
-  query.queryKey = queryOptions.queryKey ;
-
-  return query;
-}
-
-
-
-
-/**
  * @summary Upvote a comment
  */
 export const upvoteComment = (
@@ -464,6 +280,190 @@ export const useRemoveVoteComment = <TError = unknown,
       return useMutation(mutationOptions, queryClient);
     }
     /**
+ * @summary Check if current user has voted on a post
+ */
+export const voteStatus = (
+    postId: number,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<ApiResponseBoolean>(
+      {url: `/api/v1/posts/${postId}/vote-status`, method: 'GET', signal
+    },
+      );
+    }
+  
+
+
+
+export const getVoteStatusQueryKey = (postId?: number,) => {
+    return [
+    `/api/v1/posts/${postId}/vote-status`
+    ] as const;
+    }
+
+    
+export const getVoteStatusQueryOptions = <TData = Awaited<ReturnType<typeof voteStatus>>, TError = unknown>(postId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof voteStatus>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getVoteStatusQueryKey(postId);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof voteStatus>>> = ({ signal }) => voteStatus(postId, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(postId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof voteStatus>>, TError, TData> & { queryKey: DataTag<QueryKey, TData> }
+}
+
+export type VoteStatusQueryResult = NonNullable<Awaited<ReturnType<typeof voteStatus>>>
+export type VoteStatusQueryError = unknown
+
+
+export function useVoteStatus<TData = Awaited<ReturnType<typeof voteStatus>>, TError = unknown>(
+ postId: number, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof voteStatus>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof voteStatus>>,
+          TError,
+          Awaited<ReturnType<typeof voteStatus>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> }
+export function useVoteStatus<TData = Awaited<ReturnType<typeof voteStatus>>, TError = unknown>(
+ postId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof voteStatus>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof voteStatus>>,
+          TError,
+          Awaited<ReturnType<typeof voteStatus>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> }
+export function useVoteStatus<TData = Awaited<ReturnType<typeof voteStatus>>, TError = unknown>(
+ postId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof voteStatus>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> }
+/**
+ * @summary Check if current user has voted on a post
+ */
+
+export function useVoteStatus<TData = Awaited<ReturnType<typeof voteStatus>>, TError = unknown>(
+ postId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof voteStatus>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> } {
+
+  const queryOptions = getVoteStatusQueryOptions(postId,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+/**
+ * @summary Get vote count for a post
+ */
+export const voteCount = (
+    postId: number,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<ApiResponseInteger>(
+      {url: `/api/v1/posts/${postId}/vote-count`, method: 'GET', signal
+    },
+      );
+    }
+  
+
+
+
+export const getVoteCountQueryKey = (postId?: number,) => {
+    return [
+    `/api/v1/posts/${postId}/vote-count`
+    ] as const;
+    }
+
+    
+export const getVoteCountQueryOptions = <TData = Awaited<ReturnType<typeof voteCount>>, TError = unknown>(postId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof voteCount>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getVoteCountQueryKey(postId);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof voteCount>>> = ({ signal }) => voteCount(postId, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(postId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof voteCount>>, TError, TData> & { queryKey: DataTag<QueryKey, TData> }
+}
+
+export type VoteCountQueryResult = NonNullable<Awaited<ReturnType<typeof voteCount>>>
+export type VoteCountQueryError = unknown
+
+
+export function useVoteCount<TData = Awaited<ReturnType<typeof voteCount>>, TError = unknown>(
+ postId: number, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof voteCount>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof voteCount>>,
+          TError,
+          Awaited<ReturnType<typeof voteCount>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> }
+export function useVoteCount<TData = Awaited<ReturnType<typeof voteCount>>, TError = unknown>(
+ postId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof voteCount>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof voteCount>>,
+          TError,
+          Awaited<ReturnType<typeof voteCount>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> }
+export function useVoteCount<TData = Awaited<ReturnType<typeof voteCount>>, TError = unknown>(
+ postId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof voteCount>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> }
+/**
+ * @summary Get vote count for a post
+ */
+
+export function useVoteCount<TData = Awaited<ReturnType<typeof voteCount>>, TError = unknown>(
+ postId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof voteCount>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> } {
+
+  const queryOptions = getVoteCountQueryOptions(postId,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+/**
  * @summary Check if current user has voted on a comment
  */
 export const voteStatusComment = (

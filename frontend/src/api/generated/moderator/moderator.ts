@@ -5,20 +5,249 @@
  * OpenAPI spec version: v0
  */
 import {
-  useMutation
+  useMutation,
+  useQuery
 } from '@tanstack/react-query';
 import type {
+  DataTag,
+  DefinedInitialDataOptions,
+  DefinedUseQueryResult,
   MutationFunction,
   QueryClient,
+  QueryFunction,
+  QueryKey,
+  UndefinedInitialDataOptions,
   UseMutationOptions,
-  UseMutationResult
+  UseMutationResult,
+  UseQueryOptions,
+  UseQueryResult
 } from '@tanstack/react-query';
 
 import type {
-  ApiResponseBoolean
+  ApiResponseBoolean,
+  ApiResponseListUserListItem,
+  ApiResponseUserListItem,
+  BanUserParams
 } from '.././model';
 
 import { customInstance } from '../../client/axios-client';
+
+
+
+
+/**
+ * @summary Ban a user for a duration in hours (moderator/admin)
+ */
+export const banUser = (
+    id: number,
+    params: BanUserParams,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<ApiResponseUserListItem>(
+      {url: `/api/v1/moderator/users/${id}/ban`, method: 'POST',
+        params, signal
+    },
+      );
+    }
+  
+
+
+export const getBanUserMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof banUser>>, TError,{id: number;params: BanUserParams}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof banUser>>, TError,{id: number;params: BanUserParams}, TContext> => {
+
+const mutationKey = ['banUser'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof banUser>>, {id: number;params: BanUserParams}> = (props) => {
+          const {id,params} = props ?? {};
+
+          return  banUser(id,params,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type BanUserMutationResult = NonNullable<Awaited<ReturnType<typeof banUser>>>
+    
+    export type BanUserMutationError = unknown
+
+    /**
+ * @summary Ban a user for a duration in hours (moderator/admin)
+ */
+export const useBanUser = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof banUser>>, TError,{id: number;params: BanUserParams}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof banUser>>,
+        TError,
+        {id: number;params: BanUserParams},
+        TContext
+      > => {
+
+      const mutationOptions = getBanUserMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    /**
+ * @summary Unban a user (moderator/admin)
+ */
+export const unbanUser = (
+    id: number,
+ ) => {
+      
+      
+      return customInstance<ApiResponseUserListItem>(
+      {url: `/api/v1/moderator/users/${id}/ban`, method: 'DELETE'
+    },
+      );
+    }
+  
+
+
+export const getUnbanUserMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof unbanUser>>, TError,{id: number}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof unbanUser>>, TError,{id: number}, TContext> => {
+
+const mutationKey = ['unbanUser'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof unbanUser>>, {id: number}> = (props) => {
+          const {id} = props ?? {};
+
+          return  unbanUser(id,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UnbanUserMutationResult = NonNullable<Awaited<ReturnType<typeof unbanUser>>>
+    
+    export type UnbanUserMutationError = unknown
+
+    /**
+ * @summary Unban a user (moderator/admin)
+ */
+export const useUnbanUser = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof unbanUser>>, TError,{id: number}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof unbanUser>>,
+        TError,
+        {id: number},
+        TContext
+      > => {
+
+      const mutationOptions = getUnbanUserMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    /**
+ * @summary List all users (moderator/admin)
+ */
+export const listUsers = (
+    
+ signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<ApiResponseListUserListItem>(
+      {url: `/api/v1/moderator/users`, method: 'GET', signal
+    },
+      );
+    }
+  
+
+
+
+export const getListUsersQueryKey = () => {
+    return [
+    `/api/v1/moderator/users`
+    ] as const;
+    }
+
+    
+export const getListUsersQueryOptions = <TData = Awaited<ReturnType<typeof listUsers>>, TError = unknown>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listUsers>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getListUsersQueryKey();
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof listUsers>>> = ({ signal }) => listUsers(signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof listUsers>>, TError, TData> & { queryKey: DataTag<QueryKey, TData> }
+}
+
+export type ListUsersQueryResult = NonNullable<Awaited<ReturnType<typeof listUsers>>>
+export type ListUsersQueryError = unknown
+
+
+export function useListUsers<TData = Awaited<ReturnType<typeof listUsers>>, TError = unknown>(
+  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof listUsers>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listUsers>>,
+          TError,
+          Awaited<ReturnType<typeof listUsers>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> }
+export function useListUsers<TData = Awaited<ReturnType<typeof listUsers>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listUsers>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof listUsers>>,
+          TError,
+          Awaited<ReturnType<typeof listUsers>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> }
+export function useListUsers<TData = Awaited<ReturnType<typeof listUsers>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listUsers>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> }
+/**
+ * @summary List all users (moderator/admin)
+ */
+
+export function useListUsers<TData = Awaited<ReturnType<typeof listUsers>>, TError = unknown>(
+  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof listUsers>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> } {
+
+  const queryOptions = getListUsersQueryOptions(options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
 
 
 

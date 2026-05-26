@@ -12,12 +12,12 @@ export interface PageNotificationResponse {
   totalPages?: number;
   totalElements?: number;
   pageable?: PageableObject;
+  first?: boolean;
+  last?: boolean;
   size?: number;
   content?: NotificationResponse[];
   number?: number;
   sort?: SortObject[];
-  first?: boolean;
-  last?: boolean;
   numberOfElements?: number;
   empty?: boolean;
 }

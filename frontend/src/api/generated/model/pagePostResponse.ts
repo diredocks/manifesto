@@ -12,12 +12,12 @@ export interface PagePostResponse {
   totalPages?: number;
   totalElements?: number;
   pageable?: PageableObject;
+  first?: boolean;
+  last?: boolean;
   size?: number;
   content?: PostResponse[];
   number?: number;
   sort?: SortObject[];
-  first?: boolean;
-  last?: boolean;
   numberOfElements?: number;
   empty?: boolean;
 }
