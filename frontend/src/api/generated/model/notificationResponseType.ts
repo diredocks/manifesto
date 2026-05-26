@@ -11,6 +11,7 @@ export type NotificationResponseType = typeof NotificationResponseType[keyof typ
 // eslint-disable-next-line @typescript-eslint/no-redeclare
 export const NotificationResponseType = {
   COMMENT_REPLY: 'COMMENT_REPLY',
+  POST_COMMENT: 'POST_COMMENT',
   POST_MILESTONE: 'POST_MILESTONE',
   SYSTEM: 'SYSTEM',
 } as const;

@@ -50,6 +50,14 @@ class CommentService(
                 relatedPostId = postId,
                 relatedCommentId = request.parentId
             )
+        } else if (post.authorId != authorId) {
+            notificationService.createNotification(
+                receiverId = post.authorId,
+                type = NotificationType.POST_COMMENT,
+                content = "Someone commented on your post",
+                relatedPostId = postId,
+                relatedCommentId = null
+            )
         }
 
         val comment = Comment(

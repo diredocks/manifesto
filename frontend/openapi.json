@@ -1809,6 +1809,7 @@
             "type": "string",
             "enum": [
               "COMMENT_REPLY",
+              "POST_COMMENT",
               "POST_MILESTONE",
               "SYSTEM"
             ]
