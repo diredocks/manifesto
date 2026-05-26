@@ -9,6 +9,7 @@ import com.project.manifesto.modules.auth.service.AuthService
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
+import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.GetMapping
@@ -45,7 +46,7 @@ class AuthController(
     @Operation(summary = "Get current user info")
     fun me(authentication: Authentication?): ResponseEntity<ApiResponse<UserInfoResponse>> {
         if (authentication == null || !authentication.isAuthenticated) {
-            return ResponseEntity.status(401).body(ApiResponse.unauthorized())
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ApiResponse.unauthorized())
         }
         val response = authService.getCurrentUser(authentication.name)
         return ResponseEntity.ok(ApiResponse.success(response))

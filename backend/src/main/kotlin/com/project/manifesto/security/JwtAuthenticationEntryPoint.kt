@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.project.manifesto.common.dto.ApiResponse
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
+import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.security.core.AuthenticationException
 import org.springframework.security.web.AuthenticationEntryPoint
@@ -20,7 +21,7 @@ class JwtAuthenticationEntryPoint(
     ) {
         response.status = HttpServletResponse.SC_UNAUTHORIZED
         response.contentType = MediaType.APPLICATION_JSON_VALUE
-        val body = ApiResponse.error<Any>(401, authException.message ?: "Unauthorized")
+        val body = ApiResponse.error<Any>(HttpStatus.UNAUTHORIZED.value(), authException.message ?: "Unauthorized")
         objectMapper.writeValue(response.outputStream, body)
     }
 }

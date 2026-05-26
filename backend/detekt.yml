@@ -56,7 +56,7 @@ style:
     allowedPatterns: ''
   MagicNumber:
     active: true
-    ignoreNumbers: ['-1', '0', '1', '2', '10', '100', '1000', '200', '400', '401', '403', '404', '500']
+    ignoreNumbers: ['-1', '0', '1', '2', '10', '100', '1000']
     ignoreHashCodeFunction: true
     ignorePropertyDeclaration: true
     ignoreCompanionObjectPropertyDeclaration: true

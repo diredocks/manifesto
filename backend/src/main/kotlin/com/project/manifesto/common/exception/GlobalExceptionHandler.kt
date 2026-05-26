@@ -55,5 +55,5 @@ class GlobalExceptionHandler {
     fun handleGenericException(ex: Exception): ResponseEntity<ApiResponse<Nothing>> =
         ResponseEntity
             .status(HttpStatus.INTERNAL_SERVER_ERROR)
-            .body(ApiResponse.error(500, ex.message ?: "Internal server error"))
+            .body(ApiResponse.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), ex.message ?: "Internal server error"))
 }
