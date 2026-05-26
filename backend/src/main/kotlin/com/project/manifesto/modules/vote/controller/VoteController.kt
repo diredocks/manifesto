@@ -11,16 +11,18 @@ import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
+@RequestMapping("/api/v1")
 @Tag(name = "Voting", description = "Vote APIs")
 class VoteController(
     private val voteService: VoteService,
     private val userService: UserService
 ) {
 
-    @PostMapping("/api/v1/posts/{postId}/upvote")
+    @PostMapping("/posts/{postId}/upvote")
     @Operation(summary = "Upvote a post")
     fun upvote(
         @PathVariable postId: Long,
@@ -31,7 +33,7 @@ class VoteController(
         return ResponseEntity.ok(ApiResponse.success(result))
     }
 
-    @DeleteMapping("/api/v1/posts/{postId}/upvote")
+    @DeleteMapping("/posts/{postId}/upvote")
     @Operation(summary = "Remove upvote from a post")
     fun removeVote(
         @PathVariable postId: Long,
@@ -42,7 +44,7 @@ class VoteController(
         return ResponseEntity.ok(ApiResponse.success(result))
     }
 
-    @GetMapping("/api/v1/posts/{postId}/vote-status")
+    @GetMapping("/posts/{postId}/vote-status")
     @Operation(summary = "Check if current user has voted on a post")
     fun voteStatus(
         @PathVariable postId: Long,
@@ -53,14 +55,14 @@ class VoteController(
         return ResponseEntity.ok(ApiResponse.success(result))
     }
 
-    @GetMapping("/api/v1/posts/{postId}/vote-count")
+    @GetMapping("/posts/{postId}/vote-count")
     @Operation(summary = "Get vote count for a post")
     fun voteCount(@PathVariable postId: Long): ResponseEntity<ApiResponse<Int>> {
         val result = voteService.getVoteCount(postId)
         return ResponseEntity.ok(ApiResponse.success(result))
     }
 
-    @PostMapping("/api/v1/comments/{commentId}/upvote")
+    @PostMapping("/comments/{commentId}/upvote")
     @Operation(summary = "Upvote a comment")
     fun upvoteComment(
         @PathVariable commentId: Long,
@@ -71,7 +73,7 @@ class VoteController(
         return ResponseEntity.ok(ApiResponse.success(result))
     }
 
-    @DeleteMapping("/api/v1/comments/{commentId}/upvote")
+    @DeleteMapping("/comments/{commentId}/upvote")
     @Operation(summary = "Remove upvote from a comment")
     fun removeVoteComment(
         @PathVariable commentId: Long,
@@ -82,7 +84,7 @@ class VoteController(
         return ResponseEntity.ok(ApiResponse.success(result))
     }
 
-    @GetMapping("/api/v1/comments/{commentId}/vote-status")
+    @GetMapping("/comments/{commentId}/vote-status")
     @Operation(summary = "Check if current user has voted on a comment")
     fun voteStatusComment(
         @PathVariable commentId: Long,
@@ -93,7 +95,7 @@ class VoteController(
         return ResponseEntity.ok(ApiResponse.success(result))
     }
 
-    @GetMapping("/api/v1/comments/{commentId}/vote-count")
+    @GetMapping("/comments/{commentId}/vote-count")
     @Operation(summary = "Get vote count for a comment")
     fun voteCountComment(@PathVariable commentId: Long): ResponseEntity<ApiResponse<Int>> {
         val result = voteService.getCommentVoteCount(commentId)
