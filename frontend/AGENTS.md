@@ -12,9 +12,10 @@ The frontend MUST use:
 
 * React 19
 * TypeScript (strict mode)
-* Vite
+* Vite 8
 * pnpm (never npm/yarn)
 * TailwindCSS v4
+* oxlint (ESLint replacement)
 
 ---
 
@@ -358,6 +359,8 @@ pnpm tsc --noEmit
 pnpm build
 ```
 
+(oxlint via `pnpm lint`; no separate ESLint config.)
+
 ---
 
 ## Definition of Done (Global)
@@ -413,21 +416,18 @@ refactor(api): standardize query keys
 
 ## Development Plan
 
-### P0 — Core MVP
+### P0 — Core MVP (complete)
 
 * auth (login/register/JWT)
 * feed (hot/new/ask)
 * submit post
 * post detail + comments
-* voting system
+* voting system (post + comment)
 * user profile
-* moderation basics
+* moderation (post deletion, ban/unban)
 * pagination (HN-style "More" button)
-* admin dashboard (user list + role management)
-
-Success:
-
-* full functional Hacker News clone
+* admin dashboard (user list, role management, ban/unban)
+* comment voting
 
 ---
 
@@ -449,15 +449,3 @@ Success:
 * optimistic updates
 * mobile improvements
 
----
-
-## Global Definition of Done
-
-A feature is only complete if:
-
-* UI exists
-* API wired via React Query
-* loading/error/empty handled
-* type-safe
-* build passes
-* tests pass (if applicable)

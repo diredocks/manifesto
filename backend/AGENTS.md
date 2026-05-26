@@ -32,13 +32,13 @@ Spring Boot 3.2 / Kotlin 1.9 / Java 21 modular monolith. REST JSON APIs only —
 
 ```
 common/          # BaseEntity, ApiResponse<T>, GlobalExceptionHandler, JpaConfig, RestClientConfig
-security/        # JWT filter, SecurityConfig (stateless, role-based)
+security/        # JWT filter, token provider, SecurityConfig (stateless, role-based)
 infra/           # GenerateConfig (placeholder for code generation profile)
 modules/
-  auth/          # Register, login, moderator/admin endpoints
-  user/          # User entity, UserRole enum, UserDetailsService
+  auth/          # Register, login, moderator (ban/unban), admin (user list, role change, ban/unban)
+  user/          # User entity (karma, bannedUntil), UserRole enum, UserDetailsService, UserService, UserController (profile)
   submit/        # Post CRUD (LINK + ASK types)
-  vote/          # Upvote/unvote with DB unique constraint
+  vote/          # Post + comment upvote/unvote with DB unique constraint (userId, postId, commentId)
   ranking/       # Hacker News-style hot ranking, recalculation on vote events
   comment/       # Nested comments (adjacency list via parent_id)
   notification/  # Synchronous notifications (DB-backed, read/ack)
@@ -59,11 +59,16 @@ Tests in `test` profile require zero external dependencies. E2E tests are tagged
 
 ## Key patterns
 
-- **Synchronous voting**: `VoteService` checks `existsByUserIdAndPostId` before inserting, with a database unique constraint on `(userId, postId)` as fallback. Ranking is recalculated synchronously after each vote.
+- **Post + comment voting**: `VoteService` handles both posts and comments via a single `Vote` entity with an optional `commentId`. Unique constraint on `(userId, postId, commentId)`. `existsByUserIdAndPostIdAndCommentId` check before insert. Ranking is recalculated synchronously after each vote; karma is updated on the content author.
+- **Karma**: `User.karma` is incremented/decremented on post and comment votes. Stored as a denormalized column on the User entity for fast reads.
+- **Ban/Unban**: Moderators and admins can ban users for a configurable duration (`bannedUntil` timestamp). Admins cannot be banned. Banned users are checked at the security filter level. `AdminService` provides `banUser`/`unbanUser`.
+- **Admin protection**: The last admin cannot be demoted to a non-admin role — enforced in `AdminService.changeUserRole`.
+- **Admin auto-creation**: Configurable via `application.properties` — on startup, an admin account is created if one doesn't already exist (email/password from config).
+- **Event-driven ranking**: Ranking recalculation is triggered by vote events, published after transaction commit to avoid stale score reads.
 - **Hacker News ranking**: `hotScore = score / (hours + 2)^1.5`. Recalculated on each vote. Hot posts served from DB queries — no external cache.
 - **Soft delete**: Posts and comments use a `deleted` boolean column, never hard-deleted.
 - **API wrapper**: All responses use `ApiResponse<T>(code, message, data)`. Routes are under `/api/v1/`.
-- **RBAC**: `ROLE_USER`, `ROLE_MODERATOR`, `ROLE_ADMIN`. Moderators can delete any post; admins can list users and change roles. `@PreAuthorize` on controller methods.
+- **RBAC**: `ROLE_USER`, `ROLE_MODERATOR`, `ROLE_ADMIN`. Moderators can delete any post and ban/unban users; admins can list users, change roles, and ban/unban. `@PreAuthorize` on controller methods. Banned users are blocked at the JWT filter level.
 - **Notifications**: Synchronous DB-backed notifications. Created inline (e.g. on comment reply), fetched via paginated endpoint.
 
 ## Infrastructure
