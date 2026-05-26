@@ -47,9 +47,7 @@ class CommentService(
                 commentRepository
                     .findById(request.parentId)
                     .orElseThrow { EntityNotFoundException("Parent comment not found: ${request.parentId}") }
-            if (parentComment.postId != postId) {
-                throw IllegalArgumentException("Parent comment does not belong to this post")
-            }
+            require(parentComment.postId == postId) { "Parent comment does not belong to this post" }
             depth = parentComment.depth + 1
 
             notificationService.createNotification(

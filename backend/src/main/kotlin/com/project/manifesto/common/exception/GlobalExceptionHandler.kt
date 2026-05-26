@@ -26,12 +26,14 @@ class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(BadCredentialsException::class)
+    @Suppress("UnusedParameter")
     fun handleBadCredentials(ex: BadCredentialsException): ResponseEntity<ApiResponse<Nothing>> =
         ResponseEntity
             .status(HttpStatus.UNAUTHORIZED)
             .body(ApiResponse.unauthorized("Invalid credentials"))
 
     @ExceptionHandler(AccessDeniedException::class)
+    @Suppress("UnusedParameter")
     fun handleAccessDenied(ex: AccessDeniedException): ResponseEntity<ApiResponse<Nothing>> =
         ResponseEntity
             .status(HttpStatus.FORBIDDEN)

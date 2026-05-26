@@ -18,6 +18,11 @@ class RankingService(
     private val postService: PostService,
     private val voteRepository: VoteRepository,
 ) {
+    companion object {
+        private const val HOT_SCORE_GRAVITY = 1.5
+        private const val RECALC_BATCH_SIZE = 200
+    }
+
     fun getNewPosts(
         pageable: Pageable,
         type: PostType? = null,
@@ -59,11 +64,11 @@ class RankingService(
 
     @Transactional
     fun recalculateScores() {
-        val posts = postRepository.findByDeletedFalseOrderByHotScoreDesc(PageRequest.of(0, 200))
+        val posts = postRepository.findByDeletedFalseOrderByHotScoreDesc(PageRequest.of(0, RECALC_BATCH_SIZE))
         for (post in posts) {
             val score = voteRepository.countByPostId(post.id)
             val hours = Duration.between(post.createdAt, Instant.now()).toHours().toDouble()
-            val hotScore = score / Math.pow(hours + 2.0, 1.5)
+            val hotScore = score / Math.pow(hours + 2.0, HOT_SCORE_GRAVITY)
             postRepository.updateScoreAndHotScore(post.id, 0, hotScore)
         }
     }
@@ -74,7 +79,7 @@ class RankingService(
         val score = voteRepository.countByPostId(postId)
         val delta = score - post.score
         val hours = Duration.between(post.createdAt, Instant.now()).toHours().toDouble()
-        val hotScore = score / Math.pow(hours + 2.0, 1.5)
+        val hotScore = score / Math.pow(hours + 2.0, HOT_SCORE_GRAVITY)
         postRepository.updateScoreAndHotScore(postId, delta, hotScore)
     }
 }

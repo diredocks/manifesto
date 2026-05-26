@@ -10,6 +10,7 @@ import org.springframework.test.context.ActiveProfiles
 @Import(TestConfig::class)
 class ManifestoApplicationTests {
     @Test
+    @Suppress("EmptyFunctionBlock")
     fun contextLoads() {
     }
 }

@@ -1,11 +1,3 @@
-build:
-  maxIssues: 0
-  excludeCorrectable: false
-  weights:
-    complexity: 2
-    formatting: 1
-    style: 1
-
 config:
   validation: true
   warningsAsErrors: false
@@ -33,17 +25,17 @@ complexity:
   active: true
   LongParameterList:
     active: true
-    functionThreshold: 8
-    constructorThreshold: 10
+    allowedFunctionParameters: 8
+    allowedConstructorParameters: 10
     ignoreDefaultParameters: true
   TooManyFunctions:
     active: true
-    thresholdInFiles: 15
-    thresholdInClasses: 15
+    allowedFunctionsPerFile: 15
+    allowedFunctionsPerClass: 15
     ignorePrivate: true
   NestedBlockDepth:
     active: true
-    threshold: 5
+    allowedDepth: 5
 
 style:
   active: true
@@ -64,7 +56,7 @@ style:
     allowedPatterns: ''
   MagicNumber:
     active: true
-    ignoreNumbers: ['-1', '0', '1', '2', '10', '100', '1000']
+    ignoreNumbers: ['-1', '0', '1', '2', '10', '100', '1000', '200', '400', '401', '403', '404', '500']
     ignoreHashCodeFunction: true
     ignorePropertyDeclaration: true
     ignoreCompanionObjectPropertyDeclaration: true
@@ -72,7 +64,7 @@ style:
     active: true
     max: 4
     excludeGuardClauses: true
-  UnusedPrivateMember:
+  UnusedPrivateProperty:
     active: true
     allowedNames: '(_|ignored|expected)'
 

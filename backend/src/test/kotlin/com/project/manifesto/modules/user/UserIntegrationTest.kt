@@ -1,6 +1,5 @@
 package com.project.manifesto.modules.user
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.project.manifesto.TestConfig
 import com.project.manifesto.modules.user.entity.User
 import com.project.manifesto.modules.user.repository.UserRepository
@@ -25,7 +24,6 @@ class UserIntegrationTest
         private val mockMvc: MockMvc,
         private val userRepository: UserRepository,
         private val passwordEncoder: PasswordEncoder,
-        private val objectMapper: ObjectMapper,
     ) {
         @BeforeEach
         fun setup() {

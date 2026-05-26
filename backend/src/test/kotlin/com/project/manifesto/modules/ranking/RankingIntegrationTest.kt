@@ -8,7 +8,6 @@ import com.project.manifesto.modules.submit.entity.PostType
 import com.project.manifesto.modules.submit.repository.PostRepository
 import com.project.manifesto.modules.user.repository.UserRepository
 import com.project.manifesto.modules.vote.repository.VoteRepository
-import com.project.manifesto.modules.vote.service.VoteService
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -32,7 +31,6 @@ class RankingIntegrationTest
         private val userRepository: UserRepository,
         private val postRepository: PostRepository,
         private val voteRepository: VoteRepository,
-        private val voteService: VoteService,
         private val objectMapper: ObjectMapper,
     ) {
         @BeforeEach

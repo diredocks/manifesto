@@ -165,7 +165,11 @@ class PostService(
         postRepository.save(post)
     }
 
-    private fun calculateInitialHotScore(): Double = 1.0 / Math.pow(2.0, 1.5)
+    private fun calculateInitialHotScore(): Double = 1.0 / Math.pow(2.0, HOT_SCORE_GRAVITY)
+
+    companion object {
+        private const val HOT_SCORE_GRAVITY = 1.5
+    }
 
     fun toPostResponse(post: Post): PostResponse {
         val author =

@@ -7,6 +7,7 @@ import com.project.manifesto.modules.user.repository.UserRepository
 import jakarta.persistence.EntityNotFoundException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.Duration
 import java.time.Instant
 
 @Service
@@ -59,7 +60,7 @@ class AdminService(
                 .findById(userId)
                 .orElseThrow { EntityNotFoundException("User not found: $userId") }
         require(user.role != UserRole.ROLE_ADMIN) { "Cannot ban an admin" }
-        user.bannedUntil = Instant.now().plusSeconds(durationHours * 3600)
+        user.bannedUntil = Instant.now().plusSeconds(Duration.ofHours(durationHours).seconds)
         return userRepository.save(user).toListItem()
     }
 

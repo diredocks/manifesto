@@ -5,7 +5,7 @@ plugins {
     kotlin("plugin.spring") version "2.3.21"
     kotlin("plugin.jpa") version "2.3.21"
     id("org.jlleitschuh.gradle.ktlint") version "12.1.0"
-    id("io.gitlab.arturbosch.detekt") version "1.23.6"
+    id("dev.detekt") version "2.0.0-alpha.3"
 }
 
 group = "com.project"
@@ -92,7 +92,7 @@ ktlint {
 
 // ── detekt ────────────────────────────────────────────────────────────────────
 detekt {
-    toolVersion = "1.23.6"
+    toolVersion = "2.0.0-alpha.3"
     source.setFrom("src/main/kotlin", "src/test/kotlin")
     config.setFrom("detekt.yml")
     buildUponDefaultConfig = true

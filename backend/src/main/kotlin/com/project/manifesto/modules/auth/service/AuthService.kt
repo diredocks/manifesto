@@ -23,12 +23,8 @@ class AuthService(
 ) {
     @Transactional
     fun register(request: RegisterRequest): AuthResponse {
-        if (userRepository.existsByUsername(request.username)) {
-            throw IllegalArgumentException("Username already taken")
-        }
-        if (userRepository.existsByEmail(request.email)) {
-            throw IllegalArgumentException("Email already registered")
-        }
+        require(!userRepository.existsByUsername(request.username)) { "Username already taken" }
+        require(!userRepository.existsByEmail(request.email)) { "Email already registered" }
 
         val user =
             User(

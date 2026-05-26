@@ -9,6 +9,10 @@ import java.time.Duration
 
 @Configuration
 class RestClientConfig {
+    companion object {
+        private val READ_TIMEOUT = Duration.ofSeconds(30)
+    }
+
     @Bean
     fun restClientBuilder(): RestClient.Builder {
         val httpClient =
@@ -19,7 +23,7 @@ class RestClientConfig {
 
         val factory =
             JdkClientHttpRequestFactory(httpClient).apply {
-                setReadTimeout(Duration.ofSeconds(30))
+                setReadTimeout(READ_TIMEOUT)
             }
 
         return RestClient.builder().requestFactory(factory)
