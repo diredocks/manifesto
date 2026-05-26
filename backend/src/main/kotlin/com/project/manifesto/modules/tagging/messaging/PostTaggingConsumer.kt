@@ -1,7 +1,7 @@
 package com.project.manifesto.modules.tagging.messaging
 
-import com.project.manifesto.modules.tagging.service.TagGenerationService
 import com.project.manifesto.modules.submit.repository.PostRepository
+import com.project.manifesto.modules.tagging.service.TagGenerationService
 import org.slf4j.LoggerFactory
 import org.springframework.amqp.rabbit.annotation.RabbitListener
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
