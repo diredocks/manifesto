@@ -16,13 +16,17 @@ class VoteService(
     private val rankingService: RankingService,
     private val commentRepository: CommentRepository,
     private val postRepository: PostRepository,
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
 ) {
-
     @Transactional
-    fun upvote(userId: Long, postId: Long): Boolean {
-        val user = userRepository.findById(userId)
-            .orElseThrow { EntityNotFoundException("User not found: $userId") }
+    fun upvote(
+        userId: Long,
+        postId: Long,
+    ): Boolean {
+        val user =
+            userRepository
+                .findById(userId)
+                .orElseThrow { EntityNotFoundException("User not found: $userId") }
         require(!user.isBanned()) { "You are banned and cannot vote" }
 
         if (voteRepository.existsByUserIdAndPostId(userId, postId)) {
@@ -30,23 +34,34 @@ class VoteService(
         }
         voteRepository.save(Vote(userId = userId, postId = postId))
         rankingService.recalculatePostScore(postId)
-        val post = postRepository.findById(postId)
-            .orElseThrow { EntityNotFoundException("Post not found: $postId") }
-        val author = userRepository.findById(post.authorId)
-            .orElseThrow { EntityNotFoundException("User not found: ${post.authorId}") }
+        val post =
+            postRepository
+                .findById(postId)
+                .orElseThrow { EntityNotFoundException("Post not found: $postId") }
+        val author =
+            userRepository
+                .findById(post.authorId)
+                .orElseThrow { EntityNotFoundException("User not found: ${post.authorId}") }
         author.karma += 1
         userRepository.save(author)
         return true
     }
 
     @Transactional
-    fun removeVote(userId: Long, postId: Long): Boolean {
+    fun removeVote(
+        userId: Long,
+        postId: Long,
+    ): Boolean {
         voteRepository.deleteByUserIdAndPostId(userId, postId)
         rankingService.recalculatePostScore(postId)
-        val post = postRepository.findById(postId)
-            .orElseThrow { EntityNotFoundException("Post not found: $postId") }
-        val author = userRepository.findById(post.authorId)
-            .orElseThrow { EntityNotFoundException("User not found: ${post.authorId}") }
+        val post =
+            postRepository
+                .findById(postId)
+                .orElseThrow { EntityNotFoundException("Post not found: $postId") }
+        val author =
+            userRepository
+                .findById(post.authorId)
+                .orElseThrow { EntityNotFoundException("User not found: ${post.authorId}") }
         if (author.karma > 0) {
             author.karma -= 1
             userRepository.save(author)
@@ -55,47 +70,62 @@ class VoteService(
     }
 
     @Transactional(readOnly = true)
-    fun hasVoted(userId: Long, postId: Long): Boolean {
-        return voteRepository.existsByUserIdAndPostId(userId, postId)
-    }
+    fun hasVoted(
+        userId: Long,
+        postId: Long,
+    ): Boolean = voteRepository.existsByUserIdAndPostId(userId, postId)
 
     @Transactional(readOnly = true)
-    fun getVoteCount(postId: Long): Int {
-        return voteRepository.countByPostId(postId)
-    }
+    fun getVoteCount(postId: Long): Int = voteRepository.countByPostId(postId)
 
     @Transactional
-    fun upvoteComment(userId: Long, commentId: Long): Boolean {
-        val user = userRepository.findById(userId)
-            .orElseThrow { EntityNotFoundException("User not found: $userId") }
+    fun upvoteComment(
+        userId: Long,
+        commentId: Long,
+    ): Boolean {
+        val user =
+            userRepository
+                .findById(userId)
+                .orElseThrow { EntityNotFoundException("User not found: $userId") }
         require(!user.isBanned()) { "You are banned and cannot vote" }
 
         if (voteRepository.existsByUserIdAndCommentId(userId, commentId)) {
             return true
         }
         voteRepository.save(Vote(userId = userId, commentId = commentId))
-        val comment = commentRepository.findById(commentId)
-            .orElseThrow { EntityNotFoundException("Comment not found: $commentId") }
+        val comment =
+            commentRepository
+                .findById(commentId)
+                .orElseThrow { EntityNotFoundException("Comment not found: $commentId") }
         comment.score += 1
         commentRepository.save(comment)
-        val author = userRepository.findById(comment.authorId)
-            .orElseThrow { EntityNotFoundException("User not found: ${comment.authorId}") }
+        val author =
+            userRepository
+                .findById(comment.authorId)
+                .orElseThrow { EntityNotFoundException("User not found: ${comment.authorId}") }
         author.karma += 1
         userRepository.save(author)
         return true
     }
 
     @Transactional
-    fun removeVoteComment(userId: Long, commentId: Long): Boolean {
+    fun removeVoteComment(
+        userId: Long,
+        commentId: Long,
+    ): Boolean {
         voteRepository.deleteByUserIdAndCommentId(userId, commentId)
-        val comment = commentRepository.findById(commentId)
-            .orElseThrow { EntityNotFoundException("Comment not found: $commentId") }
+        val comment =
+            commentRepository
+                .findById(commentId)
+                .orElseThrow { EntityNotFoundException("Comment not found: $commentId") }
         if (comment.score > 0) {
             comment.score -= 1
             commentRepository.save(comment)
         }
-        val author = userRepository.findById(comment.authorId)
-            .orElseThrow { EntityNotFoundException("User not found: ${comment.authorId}") }
+        val author =
+            userRepository
+                .findById(comment.authorId)
+                .orElseThrow { EntityNotFoundException("User not found: ${comment.authorId}") }
         if (author.karma > 0) {
             author.karma -= 1
             userRepository.save(author)
@@ -104,12 +134,11 @@ class VoteService(
     }
 
     @Transactional(readOnly = true)
-    fun hasVotedComment(userId: Long, commentId: Long): Boolean {
-        return voteRepository.existsByUserIdAndCommentId(userId, commentId)
-    }
+    fun hasVotedComment(
+        userId: Long,
+        commentId: Long,
+    ): Boolean = voteRepository.existsByUserIdAndCommentId(userId, commentId)
 
     @Transactional(readOnly = true)
-    fun getCommentVoteCount(commentId: Long): Int {
-        return voteRepository.countByCommentId(commentId)
-    }
+    fun getCommentVoteCount(commentId: Long): Int = voteRepository.countByCommentId(commentId)
 }

@@ -19,31 +19,32 @@ import org.springframework.test.web.servlet.get
 @AutoConfigureMockMvc
 @ActiveProfiles("e2e")
 @Tag("e2e")
-class UserProfileE2ETest @Autowired constructor(
-    mockMvc: MockMvc,
-    userRepository: UserRepository,
-    postRepository: PostRepository,
-    voteRepository: VoteRepository,
-    commentRepository: CommentRepository,
-    notificationRepository: NotificationRepository,
-    objectMapper: ObjectMapper
-) : E2EBase(mockMvc, userRepository, postRepository, voteRepository, commentRepository, notificationRepository, objectMapper) {
+class UserProfileE2ETest
+    @Autowired
+    constructor(
+        mockMvc: MockMvc,
+        userRepository: UserRepository,
+        postRepository: PostRepository,
+        voteRepository: VoteRepository,
+        commentRepository: CommentRepository,
+        notificationRepository: NotificationRepository,
+        objectMapper: ObjectMapper,
+    ) : E2EBase(mockMvc, userRepository, postRepository, voteRepository, commentRepository, notificationRepository, objectMapper) {
+        @Test
+        fun `user profile endpoint returns public info`() {
+            registerAndGetToken("uprof")
+            mockMvc.get("/api/v1/users/uprof").andExpect {
+                status { isOk() }
+                jsonPath("$.data.username") { value("uprof") }
+                jsonPath("$.data.karma") { value(0) }
+                jsonPath("$.data.createdAt") { exists() }
+            }
+        }
 
-    @Test
-    fun `user profile endpoint returns public info`() {
-        registerAndGetToken("uprof")
-        mockMvc.get("/api/v1/users/uprof").andExpect {
-            status { isOk() }
-            jsonPath("$.data.username") { value("uprof") }
-            jsonPath("$.data.karma") { value(0) }
-            jsonPath("$.data.createdAt") { exists() }
+        @Test
+        fun `user profile for nonexistent user returns 400`() {
+            mockMvc.get("/api/v1/users/noone").andExpect {
+                status { isBadRequest() }
+            }
         }
     }
-
-    @Test
-    fun `user profile for nonexistent user returns 400`() {
-        mockMvc.get("/api/v1/users/noone").andExpect {
-            status { isBadRequest() }
-        }
-    }
-}

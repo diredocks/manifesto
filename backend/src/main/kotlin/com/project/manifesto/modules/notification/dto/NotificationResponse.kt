@@ -10,5 +10,5 @@ data class NotificationResponse(
     val isRead: Boolean,
     val relatedPostId: Long?,
     val relatedCommentId: Long?,
-    val createdAt: Instant
+    val createdAt: Instant,
 )

@@ -5,5 +5,5 @@ data class UserInfoResponse(
     val username: String,
     val email: String,
     val karma: Int,
-    val role: String
+    val role: String,
 )

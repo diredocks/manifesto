@@ -11,7 +11,6 @@ import org.springframework.test.context.ActiveProfiles
 @ActiveProfiles("e2e")
 @Tag("e2e")
 class E2ESmokeTest {
-
     @Autowired
     private lateinit var context: ApplicationContext
 

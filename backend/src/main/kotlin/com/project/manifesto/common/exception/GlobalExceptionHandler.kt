@@ -13,50 +13,45 @@ import org.springframework.web.bind.annotation.RestControllerAdvice
 
 @RestControllerAdvice
 class GlobalExceptionHandler {
-
     @ExceptionHandler(MethodArgumentNotValidException::class)
     fun handleValidationExceptions(ex: MethodArgumentNotValidException): ResponseEntity<ApiResponse<Nothing>> {
-        val errors = ex.bindingResult.allErrors.joinToString(", ") { error ->
-            val fieldError = error as FieldError
-            "${fieldError.field}: ${fieldError.defaultMessage}"
-        }
+        val errors =
+            ex.bindingResult.allErrors.joinToString(", ") { error ->
+                val fieldError = error as FieldError
+                "${fieldError.field}: ${fieldError.defaultMessage}"
+            }
         return ResponseEntity
             .status(HttpStatus.BAD_REQUEST)
             .body(ApiResponse.badRequest(errors))
     }
 
     @ExceptionHandler(BadCredentialsException::class)
-    fun handleBadCredentials(ex: BadCredentialsException): ResponseEntity<ApiResponse<Nothing>> {
-        return ResponseEntity
+    fun handleBadCredentials(ex: BadCredentialsException): ResponseEntity<ApiResponse<Nothing>> =
+        ResponseEntity
             .status(HttpStatus.UNAUTHORIZED)
             .body(ApiResponse.unauthorized("Invalid credentials"))
-    }
 
     @ExceptionHandler(AccessDeniedException::class)
-    fun handleAccessDenied(ex: AccessDeniedException): ResponseEntity<ApiResponse<Nothing>> {
-        return ResponseEntity
+    fun handleAccessDenied(ex: AccessDeniedException): ResponseEntity<ApiResponse<Nothing>> =
+        ResponseEntity
             .status(HttpStatus.FORBIDDEN)
             .body(ApiResponse.forbidden())
-    }
 
     @ExceptionHandler(EntityNotFoundException::class)
-    fun handleEntityNotFound(ex: EntityNotFoundException): ResponseEntity<ApiResponse<Nothing>> {
-        return ResponseEntity
+    fun handleEntityNotFound(ex: EntityNotFoundException): ResponseEntity<ApiResponse<Nothing>> =
+        ResponseEntity
             .status(HttpStatus.NOT_FOUND)
             .body(ApiResponse.notFound(ex.message ?: "Resource not found"))
-    }
 
     @ExceptionHandler(IllegalArgumentException::class)
-    fun handleIllegalArgument(ex: IllegalArgumentException): ResponseEntity<ApiResponse<Nothing>> {
-        return ResponseEntity
+    fun handleIllegalArgument(ex: IllegalArgumentException): ResponseEntity<ApiResponse<Nothing>> =
+        ResponseEntity
             .status(HttpStatus.BAD_REQUEST)
             .body(ApiResponse.badRequest(ex.message ?: "Invalid request"))
-    }
 
     @ExceptionHandler(Exception::class)
-    fun handleGenericException(ex: Exception): ResponseEntity<ApiResponse<Nothing>> {
-        return ResponseEntity
+    fun handleGenericException(ex: Exception): ResponseEntity<ApiResponse<Nothing>> =
+        ResponseEntity
             .status(HttpStatus.INTERNAL_SERVER_ERROR)
             .body(ApiResponse.error(500, ex.message ?: "Internal server error"))
-    }
 }

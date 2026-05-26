@@ -24,9 +24,35 @@ This file provides guidance to agents when working with code in this repository.
 ./gradlew e2eTest --no-daemon
 ```
 
+## Lint & Format
+
+```bash
+# Run all checks (ktlint + detekt)
+./gradlew lint --no-daemon
+
+# Auto-format code (ktlint)
+./gradlew lintFormat --no-daemon
+
+# Run ktlint only
+./gradlew ktlintCheck --no-daemon
+
+# Auto-format with ktlint only
+./gradlew ktlintFormat --no-daemon
+
+# Run detekt only
+./gradlew detekt --no-daemon
+
+# Update detekt baseline after fixing issues
+./gradlew detektBaseline --no-daemon
+```
+
+**ktlint** enforces Kotlin style conventions and auto-formats code. Configuration lives in the `ktlint { }` block in `build.gradle.kts`.
+
+**detekt** performs static analysis — complexity, style, naming, performance, etc. Rules are configured in `detekt.yml`. Existing violations are recorded in `detekt-baseline.xml`; only new violations will fail the build. After fixing a baseline entry, regenerate the baseline to shrink it.
+
 ## Architecture
 
-Spring Boot 3.2 / Kotlin 1.9 / Java 21 modular monolith. REST JSON APIs only — no SSR, no Thymeleaf.
+Spring Boot 3.2 / Kotlin 2.3 / Java 21 modular monolith. REST JSON APIs only — no SSR, no Thymeleaf.
 
 **Package layout** under `src/main/kotlin/com/project/manifesto/`:
 

@@ -4,5 +4,5 @@ enum class NotificationType {
     COMMENT_REPLY,
     POST_COMMENT,
     POST_MILESTONE,
-    SYSTEM
+    SYSTEM,
 }

@@ -1,11 +1,11 @@
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-
 plugins {
     id("org.springframework.boot") version "3.2.5"
     id("io.spring.dependency-management") version "1.1.4"
-    kotlin("jvm") version "1.9.23"
-    kotlin("plugin.spring") version "1.9.23"
-    kotlin("plugin.jpa") version "1.9.23"
+    kotlin("jvm") version "2.3.21"
+    kotlin("plugin.spring") version "2.3.21"
+    kotlin("plugin.jpa") version "2.3.21"
+    id("org.jlleitschuh.gradle.ktlint") version "12.1.0"
+    id("io.gitlab.arturbosch.detekt") version "1.23.6"
 }
 
 group = "com.project"
@@ -50,16 +50,16 @@ dependencies {
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
-tasks.withType<KotlinCompile> {
-    kotlinOptions {
-        freeCompilerArgs += listOf("-Xjsr305=strict", "-java-parameters")
-        jvmTarget = "21"
-    }
-}
-
 tasks.withType<Test> {
     useJUnitPlatform()
     jvmArgs("-Xshare:off")
+}
+
+kotlin {
+    compilerOptions {
+        freeCompilerArgs.addAll("-java-parameters")
+        jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_21)
+    }
 }
 
 tasks.test {
@@ -79,3 +79,36 @@ tasks.register<Test>("e2eTest") {
     mustRunAfter(tasks.test)
 }
 
+// ── ktlint ────────────────────────────────────────────────────────────────────
+ktlint {
+    version.set("1.8.0")
+    debug.set(false)
+    verbose.set(true)
+    outputToConsole.set(true)
+    filter {
+        exclude { element -> element.file.path.contains("/build/") }
+    }
+}
+
+// ── detekt ────────────────────────────────────────────────────────────────────
+detekt {
+    toolVersion = "1.23.6"
+    source.setFrom("src/main/kotlin", "src/test/kotlin")
+    config.setFrom("detekt.yml")
+    buildUponDefaultConfig = true
+    autoCorrect = true
+    parallel = true
+}
+
+// ── Combined lint task ────────────────────────────────────────────────────────
+tasks.register("lint") {
+    group = "verification"
+    description = "Run ktlint and detekt checks"
+    dependsOn("ktlintCheck", "detekt")
+}
+
+tasks.register("lintFormat") {
+    group = "formatting"
+    description = "Auto-format with ktlint and detekt"
+    dependsOn("ktlintFormat")
+}

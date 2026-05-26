@@ -5,5 +5,5 @@ import java.time.Instant
 data class UserProfileResponse(
     val username: String,
     val karma: Int,
-    val createdAt: Instant
+    val createdAt: Instant,
 )

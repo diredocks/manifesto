@@ -9,7 +9,6 @@ import org.springframework.test.context.ActiveProfiles
 @ActiveProfiles("test")
 @Import(TestConfig::class)
 class ManifestoApplicationTests {
-
     @Test
     fun contextLoads() {
     }

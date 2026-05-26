@@ -15,18 +15,20 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/api/v1/users")
 @Tag(name = "Users", description = "User APIs")
 class UserController(
-    private val userService: UserService
+    private val userService: UserService,
 ) {
-
     @GetMapping("/{username}")
     @Operation(summary = "Get public user profile by username")
-    fun getUserProfile(@PathVariable username: String): ResponseEntity<ApiResponse<UserProfileResponse>> {
+    fun getUserProfile(
+        @PathVariable username: String,
+    ): ResponseEntity<ApiResponse<UserProfileResponse>> {
         val user = userService.findByUsername(username)
-        val response = UserProfileResponse(
-            username = user.username,
-            karma = user.karma,
-            createdAt = user.createdAt
-        )
+        val response =
+            UserProfileResponse(
+                username = user.username,
+                karma = user.karma,
+                createdAt = user.createdAt,
+            )
         return ResponseEntity.ok(ApiResponse.success(response))
     }
 }

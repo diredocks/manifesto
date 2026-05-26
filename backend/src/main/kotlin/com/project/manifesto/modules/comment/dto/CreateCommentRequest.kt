@@ -5,6 +5,5 @@ import jakarta.validation.constraints.NotBlank
 data class CreateCommentRequest(
     @field:NotBlank(message = "Content is required")
     val content: String,
-
-    val parentId: Long? = null
+    val parentId: Long? = null,
 )

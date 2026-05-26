@@ -11,7 +11,6 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.data.domain.Page
 import org.springframework.data.domain.PageRequest
-import org.springframework.data.domain.Sort
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -28,14 +27,13 @@ import org.springframework.web.bind.annotation.RestController
 @Tag(name = "Posts", description = "Post submission APIs")
 class PostController(
     private val postService: PostService,
-    private val userService: UserService
+    private val userService: UserService,
 ) {
-
     @PostMapping
     @Operation(summary = "Create a new post")
     fun createPost(
         @Valid @RequestBody request: CreatePostRequest,
-        authentication: Authentication
+        authentication: Authentication,
     ): ResponseEntity<ApiResponse<PostDetailResponse>> {
         val user = userService.findByUsername(authentication.name)
         val response = postService.createPost(user.id, request)
@@ -44,7 +42,9 @@ class PostController(
 
     @GetMapping("/{id}")
     @Operation(summary = "Get post by ID")
-    fun getPost(@PathVariable id: Long): ResponseEntity<ApiResponse<PostDetailResponse>> {
+    fun getPost(
+        @PathVariable id: Long,
+    ): ResponseEntity<ApiResponse<PostDetailResponse>> {
         val response = postService.getPostById(id)
         return ResponseEntity.ok(ApiResponse.success(response))
     }
@@ -54,14 +54,15 @@ class PostController(
     fun listPosts(
         @RequestParam(defaultValue = "new") sort: String,
         @RequestParam(defaultValue = "0") page: Int,
-        @RequestParam(defaultValue = "20") size: Int
+        @RequestParam(defaultValue = "20") size: Int,
     ): ResponseEntity<ApiResponse<Page<PostResponse>>> {
         val pageable = PageRequest.of(page, size)
-        val result = when (sort.lowercase()) {
-            "hot" -> postService.listHotPosts(pageable)
-            "top" -> postService.listTopPosts(pageable)
-            else -> postService.listNewPosts(pageable)
-        }
+        val result =
+            when (sort.lowercase()) {
+                "hot" -> postService.listHotPosts(pageable)
+                "top" -> postService.listTopPosts(pageable)
+                else -> postService.listNewPosts(pageable)
+            }
         return ResponseEntity.ok(ApiResponse.success(result))
     }
 
@@ -70,7 +71,7 @@ class PostController(
     fun getPostsByUser(
         @PathVariable username: String,
         @RequestParam(defaultValue = "0") page: Int,
-        @RequestParam(defaultValue = "20") size: Int
+        @RequestParam(defaultValue = "20") size: Int,
     ): ResponseEntity<ApiResponse<Page<PostResponse>>> {
         val user = userService.findByUsername(username)
         val pageable = PageRequest.of(page, size)
@@ -82,7 +83,7 @@ class PostController(
     @Operation(summary = "Delete own post")
     fun deletePost(
         @PathVariable id: Long,
-        authentication: Authentication
+        authentication: Authentication,
     ): ResponseEntity<ApiResponse<Boolean>> {
         val user = userService.findByUsername(authentication.name)
         val response = postService.deletePost(id, user.id)

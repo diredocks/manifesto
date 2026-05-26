@@ -24,9 +24,8 @@ class SecurityConfig(
     private val jwtAuthenticationFilter: JwtAuthenticationFilter,
     private val userDetailsService: UserDetailsService,
     private val jwtAuthenticationEntryPoint: JwtAuthenticationEntryPoint,
-    private val jwtAccessDeniedHandler: JwtAccessDeniedHandler
+    private val jwtAccessDeniedHandler: JwtAccessDeniedHandler,
 ) {
-
     @Bean
     fun passwordEncoder(): PasswordEncoder = BCryptPasswordEncoder()
 
@@ -39,9 +38,7 @@ class SecurityConfig(
     }
 
     @Bean
-    fun authenticationManager(config: AuthenticationConfiguration): AuthenticationManager {
-        return config.authenticationManager
-    }
+    fun authenticationManager(config: AuthenticationConfiguration): AuthenticationManager = config.authenticationManager
 
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
@@ -51,18 +48,23 @@ class SecurityConfig(
             .exceptionHandling { ex ->
                 ex.authenticationEntryPoint(jwtAuthenticationEntryPoint)
                 ex.accessDeniedHandler(jwtAccessDeniedHandler)
-            }
-            .authorizeHttpRequests { auth ->
+            }.authorizeHttpRequests { auth ->
                 auth
-                    .requestMatchers("/api/v1/auth/**").permitAll()
-                    .requestMatchers("/swagger-ui/**", "/api-docs/**", "/swagger-ui.html").permitAll()
-                    .requestMatchers(HttpMethod.GET, "/api/v1/users/**").permitAll()
-                    .requestMatchers(HttpMethod.GET, "/api/v1/posts/**").permitAll()
-                    .requestMatchers(HttpMethod.GET, "/api/v1/comments/**").permitAll()
-                    .requestMatchers(HttpMethod.GET, "/api/v1/ranking/**").permitAll()
-                    .anyRequest().authenticated()
-            }
-            .authenticationProvider(authenticationProvider())
+                    .requestMatchers("/api/v1/auth/**")
+                    .permitAll()
+                    .requestMatchers("/swagger-ui/**", "/api-docs/**", "/swagger-ui.html")
+                    .permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/v1/users/**")
+                    .permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/v1/posts/**")
+                    .permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/v1/comments/**")
+                    .permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/v1/ranking/**")
+                    .permitAll()
+                    .anyRequest()
+                    .authenticated()
+            }.authenticationProvider(authenticationProvider())
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
 
         return http.build()

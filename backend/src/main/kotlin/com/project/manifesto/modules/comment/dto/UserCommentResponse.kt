@@ -8,5 +8,5 @@ data class UserCommentResponse(
     val postTitle: String,
     val content: String,
     val score: Int,
-    val createdAt: Instant
+    val createdAt: Instant,
 )

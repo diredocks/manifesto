@@ -9,11 +9,8 @@ data class CreatePostRequest(
     @field:NotBlank(message = "Title is required")
     @field:Size(max = 300, message = "Title must be at most 300 characters")
     val title: String,
-
     @field:NotNull(message = "Type is required")
     val type: PostType,
-
     val url: String? = null,
-
-    val content: String? = null
+    val content: String? = null,
 )

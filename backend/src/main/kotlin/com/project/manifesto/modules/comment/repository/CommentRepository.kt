@@ -8,10 +8,9 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface CommentRepository : JpaRepository<Comment, Long> {
-
     fun findByPostIdAndParentIdIsNullAndDeletedFalseOrderByCreatedAtDesc(
         postId: Long,
-        pageable: Pageable
+        pageable: Pageable,
     ): Page<Comment>
 
     fun findByPostIdAndDeletedFalseOrderByCreatedAtAsc(postId: Long): List<Comment>
@@ -20,7 +19,13 @@ interface CommentRepository : JpaRepository<Comment, Long> {
 
     fun countByPostIdAndDeletedFalse(postId: Long): Int
 
-    fun findByPostIdAndDeletedFalse(postId: Long, pageable: Pageable): Page<Comment>
+    fun findByPostIdAndDeletedFalse(
+        postId: Long,
+        pageable: Pageable,
+    ): Page<Comment>
 
-    fun findByAuthorIdAndDeletedFalseOrderByCreatedAtDesc(authorId: Long, pageable: Pageable): Page<Comment>
+    fun findByAuthorIdAndDeletedFalseOrderByCreatedAtDesc(
+        authorId: Long,
+        pageable: Pageable,
+    ): Page<Comment>
 }

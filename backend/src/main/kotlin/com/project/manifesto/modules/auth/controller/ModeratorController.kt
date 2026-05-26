@@ -24,41 +24,40 @@ import org.springframework.web.bind.annotation.RestController
 class ModeratorController(
     private val postService: PostService,
     private val commentService: CommentService,
-    private val adminService: AdminService
+    private val adminService: AdminService,
 ) {
-
     @DeleteMapping("/posts/{id}")
     @Operation(summary = "Delete any post (moderator/admin)")
-    fun deletePost(@PathVariable id: Long): ResponseEntity<ApiResponse<Boolean>> {
+    fun deletePost(
+        @PathVariable id: Long,
+    ): ResponseEntity<ApiResponse<Boolean>> {
         postService.deletePostAsModerator(id)
         return ResponseEntity.ok(ApiResponse.success(true))
     }
 
     @DeleteMapping("/comments/{id}")
     @Operation(summary = "Delete any comment (moderator/admin)")
-    fun deleteComment(@PathVariable id: Long): ResponseEntity<ApiResponse<Boolean>> {
+    fun deleteComment(
+        @PathVariable id: Long,
+    ): ResponseEntity<ApiResponse<Boolean>> {
         commentService.deleteCommentAsModerator(id)
         return ResponseEntity.ok(ApiResponse.success(true))
     }
 
     @GetMapping("/users")
     @Operation(summary = "List all users (moderator/admin)")
-    fun listUsers(): ResponseEntity<ApiResponse<List<UserListItem>>> {
-        return ResponseEntity.ok(ApiResponse.success(adminService.listUsers()))
-    }
+    fun listUsers(): ResponseEntity<ApiResponse<List<UserListItem>>> = ResponseEntity.ok(ApiResponse.success(adminService.listUsers()))
 
     @PostMapping("/users/{id}/ban")
     @Operation(summary = "Ban a user for a duration in hours (moderator/admin)")
     fun banUser(
         @PathVariable id: Long,
-        @RequestParam durationHours: Long
-    ): ResponseEntity<ApiResponse<UserListItem>> {
-        return ResponseEntity.ok(ApiResponse.success(adminService.banUser(id, durationHours)))
-    }
+        @RequestParam durationHours: Long,
+    ): ResponseEntity<ApiResponse<UserListItem>> = ResponseEntity.ok(ApiResponse.success(adminService.banUser(id, durationHours)))
 
     @DeleteMapping("/users/{id}/ban")
     @Operation(summary = "Unban a user (moderator/admin)")
-    fun unbanUser(@PathVariable id: Long): ResponseEntity<ApiResponse<UserListItem>> {
-        return ResponseEntity.ok(ApiResponse.success(adminService.unbanUser(id)))
-    }
+    fun unbanUser(
+        @PathVariable id: Long,
+    ): ResponseEntity<ApiResponse<UserListItem>> = ResponseEntity.ok(ApiResponse.success(adminService.unbanUser(id)))
 }

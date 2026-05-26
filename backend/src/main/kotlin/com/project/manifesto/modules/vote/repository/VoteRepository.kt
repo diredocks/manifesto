@@ -6,11 +6,27 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface VoteRepository : JpaRepository<Vote, Long> {
-    fun existsByUserIdAndPostId(userId: Long, postId: Long): Boolean
-    fun countByPostId(postId: Long): Int
-    fun deleteByUserIdAndPostId(userId: Long, postId: Long)
+    fun existsByUserIdAndPostId(
+        userId: Long,
+        postId: Long,
+    ): Boolean
 
-    fun existsByUserIdAndCommentId(userId: Long, commentId: Long): Boolean
+    fun countByPostId(postId: Long): Int
+
+    fun deleteByUserIdAndPostId(
+        userId: Long,
+        postId: Long,
+    )
+
+    fun existsByUserIdAndCommentId(
+        userId: Long,
+        commentId: Long,
+    ): Boolean
+
     fun countByCommentId(commentId: Long): Int
-    fun deleteByUserIdAndCommentId(userId: Long, commentId: Long)
+
+    fun deleteByUserIdAndCommentId(
+        userId: Long,
+        commentId: Long,
+    )
 }

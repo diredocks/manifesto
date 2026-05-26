@@ -12,17 +12,22 @@ import java.util.Date
 import javax.crypto.SecretKey
 
 @Component
-class JwtTokenProvider(private val jwtProperties: JwtProperties) {
-
+class JwtTokenProvider(
+    private val jwtProperties: JwtProperties,
+) {
     private val key: SecretKey by lazy {
         Keys.hmacShaKeyFor(jwtProperties.secret.toByteArray(Charsets.UTF_8))
     }
 
-    fun generateToken(username: String, role: String): String {
+    fun generateToken(
+        username: String,
+        role: String,
+    ): String {
         val now = Date()
         val expiry = Date(now.time + jwtProperties.expirationMs)
 
-        return Jwts.builder()
+        return Jwts
+            .builder()
             .subject(username)
             .claim("role", role)
             .issuedAt(now)
@@ -31,14 +36,13 @@ class JwtTokenProvider(private val jwtProperties: JwtProperties) {
             .compact()
     }
 
-    fun validateToken(token: String): Boolean {
-        return try {
+    fun validateToken(token: String): Boolean =
+        try {
             val claims = parseClaims(token)
             !claims.expiration.before(Date())
         } catch (_: Exception) {
             false
         }
-    }
 
     fun getAuthentication(token: String): Authentication {
         val claims = parseClaims(token)
@@ -50,15 +54,13 @@ class JwtTokenProvider(private val jwtProperties: JwtProperties) {
         return UsernamePasswordAuthenticationToken(userDetails, "", authorities)
     }
 
-    fun getUsername(token: String): String {
-        return parseClaims(token).subject
-    }
+    fun getUsername(token: String): String = parseClaims(token).subject
 
-    private fun parseClaims(token: String): Claims {
-        return Jwts.parser()
+    private fun parseClaims(token: String): Claims =
+        Jwts
+            .parser()
             .verifyWith(key)
             .build()
             .parseSignedClaims(token)
             .payload
-    }
 }

@@ -13,5 +13,5 @@ data class CommentResponse(
     val depth: Int,
     val deleted: Boolean,
     val createdAt: Instant,
-    val children: List<CommentResponse> = emptyList()
+    val children: List<CommentResponse> = emptyList(),
 )

@@ -22,44 +22,50 @@ import org.springframework.test.web.servlet.post
 @AutoConfigureMockMvc
 @ActiveProfiles("e2e")
 @Tag("e2e")
-class CommentE2ETest @Autowired constructor(
-    mockMvc: MockMvc,
-    userRepository: UserRepository,
-    postRepository: PostRepository,
-    voteRepository: VoteRepository,
-    commentRepository: CommentRepository,
-    notificationRepository: NotificationRepository,
-    objectMapper: ObjectMapper
-) : E2EBase(mockMvc, userRepository, postRepository, voteRepository, commentRepository, notificationRepository, objectMapper) {
+class CommentE2ETest
+    @Autowired
+    constructor(
+        mockMvc: MockMvc,
+        userRepository: UserRepository,
+        postRepository: PostRepository,
+        voteRepository: VoteRepository,
+        commentRepository: CommentRepository,
+        notificationRepository: NotificationRepository,
+        objectMapper: ObjectMapper,
+    ) : E2EBase(mockMvc, userRepository, postRepository, voteRepository, commentRepository, notificationRepository, objectMapper) {
+        @Test
+        fun `comment tree builds correctly with nested replies`() {
+            val token = registerAndGetToken("cmtuser")
 
-    @Test
-    fun `comment tree builds correctly with nested replies`() {
-        val token = registerAndGetToken("cmtuser")
+            val body = mapOf("title" to "Commentable", "type" to "ASK", "content" to "post")
+            val res =
+                mockMvc
+                    .post("/api/v1/posts") {
+                        contentType = MediaType.APPLICATION_JSON
+                        header("Authorization", "Bearer $token")
+                        content = objectMapper.writeValueAsString(body)
+                    }.andReturn()
+            val postId = objectMapper.readTree(res.response.contentAsString)["data"]["id"].asLong()
 
-        val body = mapOf("title" to "Commentable", "type" to "ASK", "content" to "post")
-        val res = mockMvc.post("/api/v1/posts") {
-            contentType = MediaType.APPLICATION_JSON
-            header("Authorization", "Bearer $token")
-            content = objectMapper.writeValueAsString(body)
-        }.andReturn()
-        val postId = objectMapper.readTree(res.response.contentAsString)["data"]["id"].asLong()
+            val c1 =
+                mockMvc
+                    .post("/api/v1/posts/$postId/comments") {
+                        contentType = MediaType.APPLICATION_JSON
+                        header("Authorization", "Bearer $token")
+                        content = """{"content":"Root"}"""
+                    }.andReturn()
+            val c1Id = objectMapper.readTree(c1.response.contentAsString)["data"]["id"].asLong()
 
-        val c1 = mockMvc.post("/api/v1/posts/$postId/comments") {
-            contentType = MediaType.APPLICATION_JSON
-            header("Authorization", "Bearer $token")
-            content = """{"content":"Root"}"""
-        }.andReturn()
-        val c1Id = objectMapper.readTree(c1.response.contentAsString)["data"]["id"].asLong()
+            mockMvc
+                .post("/api/v1/posts/$postId/comments") {
+                    contentType = MediaType.APPLICATION_JSON
+                    header("Authorization", "Bearer $token")
+                    content = """{"content":"Child","parentId":$c1Id}"""
+                }.andExpect { status { isOk() } }
 
-        mockMvc.post("/api/v1/posts/$postId/comments") {
-            contentType = MediaType.APPLICATION_JSON
-            header("Authorization", "Bearer $token")
-            content = """{"content":"Child","parentId":$c1Id}"""
-        }.andExpect { status { isOk() } }
-
-        val tree = mockMvc.get("/api/v1/posts/$postId/comments").andReturn()
-        val data = objectMapper.readTree(tree.response.contentAsString)["data"]
-        assertEquals(1, data.size())
-        assertEquals(1, data[0]["children"].size())
+            val tree = mockMvc.get("/api/v1/posts/$postId/comments").andReturn()
+            val data = objectMapper.readTree(tree.response.contentAsString)["data"]
+            assertEquals(1, data.size())
+            assertEquals(1, data[0]["children"].size())
+        }
     }
-}

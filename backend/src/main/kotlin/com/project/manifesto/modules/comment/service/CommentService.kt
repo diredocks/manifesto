@@ -20,24 +20,33 @@ class CommentService(
     private val commentRepository: CommentRepository,
     private val postRepository: PostRepository,
     private val userRepository: UserRepository,
-    private val notificationService: NotificationService
+    private val notificationService: NotificationService,
 ) {
-
     @Transactional
-    fun createComment(authorId: Long, postId: Long, request: CreateCommentRequest): CommentResponse {
-        val author = userRepository.findById(authorId)
-            .orElseThrow { EntityNotFoundException("User not found: $authorId") }
+    fun createComment(
+        authorId: Long,
+        postId: Long,
+        request: CreateCommentRequest,
+    ): CommentResponse {
+        val author =
+            userRepository
+                .findById(authorId)
+                .orElseThrow { EntityNotFoundException("User not found: $authorId") }
         require(!author.isBanned()) { "You are banned and cannot comment" }
 
-        val post = postRepository.findById(postId)
-            .orElseThrow { EntityNotFoundException("Post not found: $postId") }
+        val post =
+            postRepository
+                .findById(postId)
+                .orElseThrow { EntityNotFoundException("Post not found: $postId") }
         if (post.deleted) throw EntityNotFoundException("Post not found: $postId")
 
         var depth = 0
 
         if (request.parentId != null) {
-            val parentComment = commentRepository.findById(request.parentId)
-                .orElseThrow { EntityNotFoundException("Parent comment not found: ${request.parentId}") }
+            val parentComment =
+                commentRepository
+                    .findById(request.parentId)
+                    .orElseThrow { EntityNotFoundException("Parent comment not found: ${request.parentId}") }
             if (parentComment.postId != postId) {
                 throw IllegalArgumentException("Parent comment does not belong to this post")
             }
@@ -48,7 +57,7 @@ class CommentService(
                 type = NotificationType.COMMENT_REPLY,
                 content = "Someone replied to your comment",
                 relatedPostId = postId,
-                relatedCommentId = request.parentId
+                relatedCommentId = request.parentId,
             )
         } else if (post.authorId != authorId) {
             notificationService.createNotification(
@@ -56,17 +65,18 @@ class CommentService(
                 type = NotificationType.POST_COMMENT,
                 content = "Someone commented on your post",
                 relatedPostId = postId,
-                relatedCommentId = null
+                relatedCommentId = null,
             )
         }
 
-        val comment = Comment(
-            postId = postId,
-            authorId = authorId,
-            parentId = request.parentId,
-            content = request.content,
-            depth = depth
-        )
+        val comment =
+            Comment(
+                postId = postId,
+                authorId = authorId,
+                parentId = request.parentId,
+                content = request.content,
+                depth = depth,
+            )
         val saved = commentRepository.save(comment)
 
         postRepository.incrementCommentCount(postId)
@@ -80,19 +90,23 @@ class CommentService(
         val responses = allComments.map { toResponse(it) }
         val childrenByParent = responses.groupBy { it.parentId }
 
-        fun buildTree(parentId: Long?): List<CommentResponse> {
-            return (childrenByParent[parentId] ?: emptyList()).map { child ->
+        fun buildTree(parentId: Long?): List<CommentResponse> =
+            (childrenByParent[parentId] ?: emptyList()).map { child ->
                 child.copy(children = buildTree(child.id))
             }
-        }
 
         return buildTree(null)
     }
 
     @Transactional
-    fun deleteComment(commentId: Long, userId: Long): Boolean {
-        val comment = commentRepository.findById(commentId)
-            .orElseThrow { EntityNotFoundException("Comment not found: $commentId") }
+    fun deleteComment(
+        commentId: Long,
+        userId: Long,
+    ): Boolean {
+        val comment =
+            commentRepository
+                .findById(commentId)
+                .orElseThrow { EntityNotFoundException("Comment not found: $commentId") }
         require(comment.authorId == userId) { "Not authorized to delete this comment" }
         softDeleteComment(comment)
         return true
@@ -100,15 +114,21 @@ class CommentService(
 
     @Transactional
     fun deleteCommentAsModerator(commentId: Long): Boolean {
-        val comment = commentRepository.findById(commentId)
-            .orElseThrow { EntityNotFoundException("Comment not found: $commentId") }
+        val comment =
+            commentRepository
+                .findById(commentId)
+                .orElseThrow { EntityNotFoundException("Comment not found: $commentId") }
         softDeleteComment(comment)
         return true
     }
 
     @Transactional(readOnly = true)
-    fun listCommentsByUser(userId: Long, pageable: Pageable): Page<UserCommentResponse> {
-        return commentRepository.findByAuthorIdAndDeletedFalseOrderByCreatedAtDesc(userId, pageable)
+    fun listCommentsByUser(
+        userId: Long,
+        pageable: Pageable,
+    ): Page<UserCommentResponse> =
+        commentRepository
+            .findByAuthorIdAndDeletedFalseOrderByCreatedAtDesc(userId, pageable)
             .map { comment ->
                 val post = postRepository.findById(comment.postId).orElse(null)
                 UserCommentResponse(
@@ -117,10 +137,9 @@ class CommentService(
                     postTitle = post?.title ?: "[deleted]",
                     content = comment.content,
                     score = comment.score,
-                    createdAt = comment.createdAt
+                    createdAt = comment.createdAt,
                 )
             }
-    }
 
     private fun softDeleteComment(comment: Comment) {
         comment.deleted = true
@@ -140,7 +159,7 @@ class CommentService(
             score = comment.score,
             depth = comment.depth,
             deleted = comment.deleted,
-            createdAt = comment.createdAt
+            createdAt = comment.createdAt,
         )
     }
 }

@@ -21,35 +21,40 @@ import org.springframework.test.web.servlet.post
 @AutoConfigureMockMvc
 @ActiveProfiles("e2e")
 @Tag("e2e")
-class RankingE2ETest @Autowired constructor(
-    mockMvc: MockMvc,
-    userRepository: UserRepository,
-    postRepository: PostRepository,
-    voteRepository: VoteRepository,
-    commentRepository: CommentRepository,
-    notificationRepository: NotificationRepository,
-    objectMapper: ObjectMapper
-) : E2EBase(mockMvc, userRepository, postRepository, voteRepository, commentRepository, notificationRepository, objectMapper) {
+class RankingE2ETest
+    @Autowired
+    constructor(
+        mockMvc: MockMvc,
+        userRepository: UserRepository,
+        postRepository: PostRepository,
+        voteRepository: VoteRepository,
+        commentRepository: CommentRepository,
+        notificationRepository: NotificationRepository,
+        objectMapper: ObjectMapper,
+    ) : E2EBase(mockMvc, userRepository, postRepository, voteRepository, commentRepository, notificationRepository, objectMapper) {
+        @Test
+        fun `ranking endpoints return posts in correct order`() {
+            val token = registerAndGetToken("rankuser")
+            for (i in 1..3) {
+                val body = mapOf("title" to "Post $i", "type" to "ASK", "content" to "content $i")
+                mockMvc
+                    .post("/api/v1/posts") {
+                        contentType = MediaType.APPLICATION_JSON
+                        header("Authorization", "Bearer $token")
+                        content = objectMapper.writeValueAsString(body)
+                    }.andExpect { status { isOk() } }
+            }
 
-    @Test
-    fun `ranking endpoints return posts in correct order`() {
-        val token = registerAndGetToken("rankuser")
-        for (i in 1..3) {
-            val body = mapOf("title" to "Post $i", "type" to "ASK", "content" to "content $i")
-            mockMvc.post("/api/v1/posts") {
-                contentType = MediaType.APPLICATION_JSON
-                header("Authorization", "Bearer $token")
-                content = objectMapper.writeValueAsString(body)
-            }.andExpect { status { isOk() } }
+            mockMvc
+                .get("/api/v1/ranking/new") { param("size", "10") }
+                .andExpect { jsonPath("$.data.length()") { value(3) } }
+
+            mockMvc
+                .get("/api/v1/ranking/hot")
+                .andExpect { status { isOk() } }
+
+            mockMvc
+                .get("/api/v1/ranking/top")
+                .andExpect { status { isOk() } }
         }
-
-        mockMvc.get("/api/v1/ranking/new") { param("size", "10") }
-            .andExpect { jsonPath("$.data.length()") { value(3) } }
-
-        mockMvc.get("/api/v1/ranking/hot")
-            .andExpect { status { isOk() } }
-
-        mockMvc.get("/api/v1/ranking/top")
-            .andExpect { status { isOk() } }
     }
-}

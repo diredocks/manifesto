@@ -19,21 +19,16 @@ import org.springframework.web.bind.annotation.RestController
 @PreAuthorize("hasRole('ADMIN')")
 @Tag(name = "Admin", description = "Admin tools")
 class AdminController(
-    private val adminService: AdminService
+    private val adminService: AdminService,
 ) {
-
     @GetMapping("/users")
     @Operation(summary = "List all users (admin only)")
-    fun listUsers(): ResponseEntity<ApiResponse<List<UserListItem>>> {
-        return ResponseEntity.ok(ApiResponse.success(adminService.listUsers()))
-    }
+    fun listUsers(): ResponseEntity<ApiResponse<List<UserListItem>>> = ResponseEntity.ok(ApiResponse.success(adminService.listUsers()))
 
     @PutMapping("/users/{id}/role")
     @Operation(summary = "Change user role (admin only)")
     fun changeUserRole(
         @PathVariable id: Long,
-        @RequestParam role: String
-    ): ResponseEntity<ApiResponse<UserListItem>> {
-        return ResponseEntity.ok(ApiResponse.success(adminService.changeUserRole(id, role)))
-    }
+        @RequestParam role: String,
+    ): ResponseEntity<ApiResponse<UserListItem>> = ResponseEntity.ok(ApiResponse.success(adminService.changeUserRole(id, role)))
 }

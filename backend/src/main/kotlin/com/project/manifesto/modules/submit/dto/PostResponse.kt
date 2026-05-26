@@ -13,5 +13,5 @@ data class PostResponse(
     val commentCount: Int,
     val type: String,
     val authorUsername: String,
-    val createdAt: Instant
+    val createdAt: Instant,
 )

@@ -22,15 +22,14 @@ import org.springframework.web.bind.annotation.RestController
 @Tag(name = "Notifications", description = "Notification APIs")
 class NotificationController(
     private val notificationService: NotificationService,
-    private val userService: UserService
+    private val userService: UserService,
 ) {
-
     @GetMapping
     @Operation(summary = "Get user notifications")
     fun getNotifications(
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "20") size: Int,
-        authentication: Authentication
+        authentication: Authentication,
     ): ResponseEntity<ApiResponse<Page<NotificationResponse>>> {
         val user = userService.findByUsername(authentication.name)
         val result = notificationService.getUserNotifications(user.id, PageRequest.of(page, size))
@@ -49,7 +48,7 @@ class NotificationController(
     @Operation(summary = "Mark notification as read")
     fun markAsRead(
         @PathVariable id: Long,
-        authentication: Authentication
+        authentication: Authentication,
     ): ResponseEntity<ApiResponse<Boolean>> {
         val user = userService.findByUsername(authentication.name)
         val result = notificationService.markAsRead(id, user.id)

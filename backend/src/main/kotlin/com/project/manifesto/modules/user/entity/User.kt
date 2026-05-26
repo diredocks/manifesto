@@ -17,33 +17,26 @@ import java.time.Instant
     name = "users",
     indexes = [
         Index(name = "idx_users_username", columnList = "username", unique = true),
-        Index(name = "idx_users_email", columnList = "email", unique = true)
-    ]
+        Index(name = "idx_users_email", columnList = "email", unique = true),
+    ],
 )
 class User(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     val id: Long = 0,
-
     @Column(nullable = false, unique = true, length = 50)
     var username: String,
-
     @Column(nullable = false, unique = true, length = 100)
     var email: String,
-
     @Column(name = "password_hash", nullable = false, length = 255)
     var passwordHash: String,
-
     @Column(nullable = false)
     var karma: Int = 0,
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     var role: UserRole = UserRole.ROLE_USER,
-
     @Column(name = "banned_until")
-    var bannedUntil: Instant? = null
+    var bannedUntil: Instant? = null,
 ) : BaseEntity() {
-
     fun isBanned(): Boolean = bannedUntil != null && bannedUntil!!.isAfter(Instant.now())
 }

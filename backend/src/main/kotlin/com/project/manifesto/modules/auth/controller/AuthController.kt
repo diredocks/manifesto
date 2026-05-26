@@ -21,19 +21,22 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/api/v1/auth")
 @Tag(name = "Authentication", description = "Authentication APIs")
 class AuthController(
-    private val authService: AuthService
+    private val authService: AuthService,
 ) {
-
     @PostMapping("/register")
     @Operation(summary = "Register a new user")
-    fun register(@Valid @RequestBody request: RegisterRequest): ResponseEntity<ApiResponse<AuthResponse>> {
+    fun register(
+        @Valid @RequestBody request: RegisterRequest,
+    ): ResponseEntity<ApiResponse<AuthResponse>> {
         val response = authService.register(request)
         return ResponseEntity.ok(ApiResponse.success(response))
     }
 
     @PostMapping("/login")
     @Operation(summary = "Login and get JWT token")
-    fun login(@Valid @RequestBody request: LoginRequest): ResponseEntity<ApiResponse<AuthResponse>> {
+    fun login(
+        @Valid @RequestBody request: LoginRequest,
+    ): ResponseEntity<ApiResponse<AuthResponse>> {
         val response = authService.login(request)
         return ResponseEntity.ok(ApiResponse.success(response))
     }

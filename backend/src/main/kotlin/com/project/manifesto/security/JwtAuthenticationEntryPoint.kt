@@ -11,13 +11,12 @@ import org.springframework.stereotype.Component
 
 @Component
 class JwtAuthenticationEntryPoint(
-    private val objectMapper: ObjectMapper
+    private val objectMapper: ObjectMapper,
 ) : AuthenticationEntryPoint {
-
     override fun commence(
         request: HttpServletRequest,
         response: HttpServletResponse,
-        authException: AuthenticationException
+        authException: AuthenticationException,
     ) {
         response.status = HttpServletResponse.SC_UNAUTHORIZED
         response.contentType = MediaType.APPLICATION_JSON_VALUE

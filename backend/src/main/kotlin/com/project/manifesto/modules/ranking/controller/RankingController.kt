@@ -17,15 +17,14 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("/api/v1/ranking")
 @Tag(name = "Ranking", description = "Ranking feed APIs")
 class RankingController(
-    private val rankingService: RankingService
+    private val rankingService: RankingService,
 ) {
-
     @GetMapping("/hot")
     @Operation(summary = "Get hot posts (HN style ranking)")
     fun getHot(
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "20") size: Int,
-        @RequestParam(required = false) type: PostType?
+        @RequestParam(required = false) type: PostType?,
     ): ResponseEntity<ApiResponse<List<PostResponse>>> {
         val result = rankingService.getHotPosts(PageRequest.of(page, size), type)
         return ResponseEntity.ok(ApiResponse.success(result))
@@ -36,7 +35,7 @@ class RankingController(
     fun getNew(
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "20") size: Int,
-        @RequestParam(required = false) type: PostType?
+        @RequestParam(required = false) type: PostType?,
     ): ResponseEntity<ApiResponse<List<PostResponse>>> {
         val result = rankingService.getNewPosts(PageRequest.of(page, size), type)
         return ResponseEntity.ok(ApiResponse.success(result))
@@ -47,7 +46,7 @@ class RankingController(
     fun getTop(
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "20") size: Int,
-        @RequestParam(required = false) type: PostType?
+        @RequestParam(required = false) type: PostType?,
     ): ResponseEntity<ApiResponse<List<PostResponse>>> {
         val result = rankingService.getTopPosts(PageRequest.of(page, size), type)
         return ResponseEntity.ok(ApiResponse.success(result))

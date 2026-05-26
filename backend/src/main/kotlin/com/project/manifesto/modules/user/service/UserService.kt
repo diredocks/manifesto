@@ -6,10 +6,9 @@ import org.springframework.stereotype.Service
 
 @Service
 class UserService(
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
 ) {
-    fun findByUsername(username: String): User {
-        return userRepository.findByUsername(username)
+    fun findByUsername(username: String): User =
+        userRepository.findByUsername(username)
             ?: throw IllegalArgumentException("User not found: $username")
-    }
 }

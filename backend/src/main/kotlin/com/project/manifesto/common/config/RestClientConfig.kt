@@ -9,16 +9,18 @@ import java.time.Duration
 
 @Configuration
 class RestClientConfig {
-
     @Bean
     fun restClientBuilder(): RestClient.Builder {
-        val httpClient = HttpClient.newBuilder()
-            .connectTimeout(Duration.ofSeconds(10))
-            .build()
+        val httpClient =
+            HttpClient
+                .newBuilder()
+                .connectTimeout(Duration.ofSeconds(10))
+                .build()
 
-        val factory = JdkClientHttpRequestFactory(httpClient).apply {
-            setReadTimeout(Duration.ofSeconds(30))
-        }
+        val factory =
+            JdkClientHttpRequestFactory(httpClient).apply {
+                setReadTimeout(Duration.ofSeconds(30))
+            }
 
         return RestClient.builder().requestFactory(factory)
     }

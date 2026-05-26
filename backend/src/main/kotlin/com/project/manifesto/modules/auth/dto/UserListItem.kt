@@ -8,5 +8,5 @@ data class UserListItem(
     val email: String,
     val karma: Int,
     val role: String,
-    val bannedUntil: Instant?
+    val bannedUntil: Instant?,
 )

@@ -7,8 +7,8 @@ import com.project.manifesto.modules.submit.service.PostService
 import com.project.manifesto.modules.vote.repository.VoteRepository
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Pageable
-import org.springframework.transaction.annotation.Transactional
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import java.time.Duration
 import java.time.Instant
 
@@ -16,24 +16,44 @@ import java.time.Instant
 class RankingService(
     private val postRepository: PostRepository,
     private val postService: PostService,
-    private val voteRepository: VoteRepository
+    private val voteRepository: VoteRepository,
 ) {
-
-    fun getNewPosts(pageable: Pageable, type: PostType? = null): List<PostResponse> {
-        val page = if (type != null) postService.listNewPostsByType(type, pageable)
-        else postService.listNewPosts(pageable)
+    fun getNewPosts(
+        pageable: Pageable,
+        type: PostType? = null,
+    ): List<PostResponse> {
+        val page =
+            if (type != null) {
+                postService.listNewPostsByType(type, pageable)
+            } else {
+                postService.listNewPosts(pageable)
+            }
         return page.content
     }
 
-    fun getTopPosts(pageable: Pageable, type: PostType? = null): List<PostResponse> {
-        val page = if (type != null) postService.listTopPostsByType(type, pageable)
-        else postService.listTopPosts(pageable)
+    fun getTopPosts(
+        pageable: Pageable,
+        type: PostType? = null,
+    ): List<PostResponse> {
+        val page =
+            if (type != null) {
+                postService.listTopPostsByType(type, pageable)
+            } else {
+                postService.listTopPosts(pageable)
+            }
         return page.content
     }
 
-    fun getHotPosts(pageable: Pageable, type: PostType? = null): List<PostResponse> {
-        val page = if (type != null) postService.listHotPostsByType(type, pageable)
-        else postService.listHotPosts(pageable)
+    fun getHotPosts(
+        pageable: Pageable,
+        type: PostType? = null,
+    ): List<PostResponse> {
+        val page =
+            if (type != null) {
+                postService.listHotPostsByType(type, pageable)
+            } else {
+                postService.listHotPosts(pageable)
+            }
         return page.content
     }
 

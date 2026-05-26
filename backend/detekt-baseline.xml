@@ -1,0 +1,31 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues></ManuallySuppressedIssues>
+  <CurrentIssues>
+    <ID>EmptyFunctionBlock:ManifestoApplicationTests.kt$ManifestoApplicationTests${ }</ID>
+    <ID>MagicNumber:AdminService.kt$AdminService$3600</ID>
+    <ID>MagicNumber:ApiResponse.kt$ApiResponse.Companion$200</ID>
+    <ID>MagicNumber:ApiResponse.kt$ApiResponse.Companion$400</ID>
+    <ID>MagicNumber:ApiResponse.kt$ApiResponse.Companion$401</ID>
+    <ID>MagicNumber:ApiResponse.kt$ApiResponse.Companion$403</ID>
+    <ID>MagicNumber:ApiResponse.kt$ApiResponse.Companion$404</ID>
+    <ID>MagicNumber:AuthController.kt$AuthController$401</ID>
+    <ID>MagicNumber:GlobalExceptionHandler.kt$GlobalExceptionHandler$500</ID>
+    <ID>MagicNumber:JwtAccessDeniedHandler.kt$JwtAccessDeniedHandler$403</ID>
+    <ID>MagicNumber:JwtAuthenticationEntryPoint.kt$JwtAuthenticationEntryPoint$401</ID>
+    <ID>MagicNumber:JwtAuthenticationFilter.kt$JwtAuthenticationFilter$7</ID>
+    <ID>MagicNumber:PostService.kt$PostService$1.5</ID>
+    <ID>MagicNumber:RankingService.kt$RankingService$1.5</ID>
+    <ID>MagicNumber:RankingService.kt$RankingService$200</ID>
+    <ID>MagicNumber:RestClientConfig.kt$RestClientConfig$30</ID>
+    <ID>UnusedParameter:GlobalExceptionHandler.kt$GlobalExceptionHandler$ex: AccessDeniedException</ID>
+    <ID>UnusedParameter:GlobalExceptionHandler.kt$GlobalExceptionHandler$ex: BadCredentialsException</ID>
+    <ID>UnusedPrivateProperty:PostIntegrationTest.kt$PostIntegrationTest$private val passwordEncoder: PasswordEncoder</ID>
+    <ID>UnusedPrivateProperty:RankingIntegrationTest.kt$RankingIntegrationTest$private val voteService: VoteService</ID>
+    <ID>UnusedPrivateProperty:UserIntegrationTest.kt$UserIntegrationTest$private val objectMapper: ObjectMapper</ID>
+    <ID>UnusedPrivateProperty:VoteIntegrationTest.kt$VoteIntegrationTest$private val passwordEncoder: PasswordEncoder</ID>
+    <ID>UseRequire:AuthService.kt$AuthService$throw IllegalArgumentException("Email already registered")</ID>
+    <ID>UseRequire:AuthService.kt$AuthService$throw IllegalArgumentException("Username already taken")</ID>
+    <ID>UseRequire:CommentService.kt$CommentService$throw IllegalArgumentException("Parent comment does not belong to this post")</ID>
+  </CurrentIssues>
+</SmellBaseline>

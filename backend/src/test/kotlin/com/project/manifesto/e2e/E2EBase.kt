@@ -7,7 +7,6 @@ import com.project.manifesto.modules.submit.repository.PostRepository
 import com.project.manifesto.modules.user.repository.UserRepository
 import com.project.manifesto.modules.vote.repository.VoteRepository
 import org.junit.jupiter.api.BeforeEach
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.post
@@ -19,9 +18,8 @@ abstract class E2EBase(
     protected val voteRepository: VoteRepository,
     protected val commentRepository: CommentRepository,
     protected val notificationRepository: NotificationRepository,
-    protected val objectMapper: ObjectMapper
+    protected val objectMapper: ObjectMapper,
 ) {
-
     @BeforeEach
     fun setup() {
         notificationRepository.deleteAll()
@@ -33,19 +31,25 @@ abstract class E2EBase(
 
     protected fun registerAndGetToken(username: String): String {
         val body = mapOf("username" to username, "email" to "$username@test.com", "password" to "pass123")
-        val result = mockMvc.post("/api/v1/auth/register") {
-            contentType = MediaType.APPLICATION_JSON
-            content = objectMapper.writeValueAsString(body)
-        }.andExpect { status { isOk() } }.andReturn()
+        val result =
+            mockMvc
+                .post("/api/v1/auth/register") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = objectMapper.writeValueAsString(body)
+                }.andExpect { status { isOk() } }
+                .andReturn()
         return objectMapper.readTree(result.response.contentAsString)["data"]["token"].asText()
     }
 
     protected fun login(username: String): String {
         val body = mapOf("username" to username, "password" to "pass123")
-        val result = mockMvc.post("/api/v1/auth/login") {
-            contentType = MediaType.APPLICATION_JSON
-            content = objectMapper.writeValueAsString(body)
-        }.andExpect { status { isOk() } }.andReturn()
+        val result =
+            mockMvc
+                .post("/api/v1/auth/login") {
+                    contentType = MediaType.APPLICATION_JSON
+                    content = objectMapper.writeValueAsString(body)
+                }.andExpect { status { isOk() } }
+                .andReturn()
         return objectMapper.readTree(result.response.contentAsString)["data"]["token"].asText()
     }
 }
