@@ -1,6 +1,8 @@
-import { Link, useNavigate } from 'react-router-dom'
+import { useEffect } from 'react'
+import { Link, useNavigate, useLocation } from 'react-router-dom'
 import { useAuthStore } from '@/features/auth/store'
 import { useCurrentUser } from '@/features/auth/hooks'
+import { useUnreadCount } from '@/features/notifications/hooks'
 import { useQueryClient } from '@tanstack/react-query'
 
 export function Header() {
@@ -8,9 +10,18 @@ export function Header() {
   const navigate = useNavigate()
   const queryClient = useQueryClient()
   const { data: meData } = useCurrentUser()
+  const { data: unreadData } = useUnreadCount()
+  const location = useLocation()
+  const loggedIn = !!token
+
+  useEffect(() => {
+    if (loggedIn) {
+      queryClient.invalidateQueries({ queryKey: ['/api/v1/notifications/unread-count'] })
+    }
+  }, [location.pathname, loggedIn, queryClient])
 
   const currentUser = meData?.data ?? user
-  const loggedIn = !!token
+  const unreadCount = unreadData?.data ?? 0
   const role = currentUser?.role ?? ''
   const isMod = role === 'ROLE_MODERATOR' || role === 'ROLE_ADMIN'
   const isAdmin = role === 'ROLE_ADMIN'
@@ -36,6 +47,10 @@ export function Header() {
       <div className="ml-auto flex gap-2 items-center">
         {loggedIn ? (
           <>
+            <Link to="/notifications" className="text-white visited:text-white no-underline">
+              notifications{unreadCount > 0 ? ` (${unreadCount})` : ''}
+            </Link>
+            <span className="text-white/70">|</span>
             {isMod && (
               <>
                 <Link to="/mod" className="text-white visited:text-white no-underline">mod</Link>

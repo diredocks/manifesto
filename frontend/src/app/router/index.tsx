@@ -13,6 +13,7 @@ import { UserPostsPage } from '@/pages/UserPostsPage'
 import { UserCommentsPage } from '@/pages/UserCommentsPage'
 import { ModPage } from '@/pages/ModPage'
 import { AdminPage } from '@/pages/AdminPage'
+import { NotificationsPage } from '@/pages/NotificationsPage'
 import { NotFoundPage } from '@/pages/NotFoundPage'
 
 export function AppRouter() {
@@ -27,6 +28,7 @@ export function AppRouter() {
         <Route path="user/:username/posts" element={<UserPostsPage />} />
         <Route path="user/:username/comments" element={<UserCommentsPage />} />
         <Route path="submit" element={<ProtectedRoute><SubmitPage /></ProtectedRoute>} />
+        <Route path="notifications" element={<ProtectedRoute><NotificationsPage /></ProtectedRoute>} />
         <Route path="mod" element={<ProtectedRoute><ModPage /></ProtectedRoute>} />
         <Route path="admin" element={<ProtectedRoute><AdminPage /></ProtectedRoute>} />
         <Route path="login" element={<LoginPage />} />
