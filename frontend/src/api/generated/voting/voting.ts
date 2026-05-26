@@ -340,3 +340,310 @@ export function useVoteCount<TData = Awaited<ReturnType<typeof voteCount>>, TErr
 
 
 
+/**
+ * @summary Upvote a comment
+ */
+export const upvoteComment = (
+    commentId: number,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<ApiResponseBoolean>(
+      {url: `/api/v1/comments/${commentId}/upvote`, method: 'POST', signal
+    },
+      );
+    }
+  
+
+
+export const getUpvoteCommentMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof upvoteComment>>, TError,{commentId: number}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof upvoteComment>>, TError,{commentId: number}, TContext> => {
+
+const mutationKey = ['upvoteComment'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof upvoteComment>>, {commentId: number}> = (props) => {
+          const {commentId} = props ?? {};
+
+          return  upvoteComment(commentId,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type UpvoteCommentMutationResult = NonNullable<Awaited<ReturnType<typeof upvoteComment>>>
+    
+    export type UpvoteCommentMutationError = unknown
+
+    /**
+ * @summary Upvote a comment
+ */
+export const useUpvoteComment = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof upvoteComment>>, TError,{commentId: number}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof upvoteComment>>,
+        TError,
+        {commentId: number},
+        TContext
+      > => {
+
+      const mutationOptions = getUpvoteCommentMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    /**
+ * @summary Remove upvote from a comment
+ */
+export const removeVoteComment = (
+    commentId: number,
+ ) => {
+      
+      
+      return customInstance<ApiResponseBoolean>(
+      {url: `/api/v1/comments/${commentId}/upvote`, method: 'DELETE'
+    },
+      );
+    }
+  
+
+
+export const getRemoveVoteCommentMutationOptions = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof removeVoteComment>>, TError,{commentId: number}, TContext>, }
+): UseMutationOptions<Awaited<ReturnType<typeof removeVoteComment>>, TError,{commentId: number}, TContext> => {
+
+const mutationKey = ['removeVoteComment'];
+const {mutation: mutationOptions} = options ?
+      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
+      options
+      : {...options, mutation: {...options.mutation, mutationKey}}
+      : {mutation: { mutationKey, }};
+
+      
+
+
+      const mutationFn: MutationFunction<Awaited<ReturnType<typeof removeVoteComment>>, {commentId: number}> = (props) => {
+          const {commentId} = props ?? {};
+
+          return  removeVoteComment(commentId,)
+        }
+
+        
+
+
+  return  { mutationFn, ...mutationOptions }}
+
+    export type RemoveVoteCommentMutationResult = NonNullable<Awaited<ReturnType<typeof removeVoteComment>>>
+    
+    export type RemoveVoteCommentMutationError = unknown
+
+    /**
+ * @summary Remove upvote from a comment
+ */
+export const useRemoveVoteComment = <TError = unknown,
+    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof removeVoteComment>>, TError,{commentId: number}, TContext>, }
+ , queryClient?: QueryClient): UseMutationResult<
+        Awaited<ReturnType<typeof removeVoteComment>>,
+        TError,
+        {commentId: number},
+        TContext
+      > => {
+
+      const mutationOptions = getRemoveVoteCommentMutationOptions(options);
+
+      return useMutation(mutationOptions, queryClient);
+    }
+    /**
+ * @summary Check if current user has voted on a comment
+ */
+export const voteStatusComment = (
+    commentId: number,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<ApiResponseBoolean>(
+      {url: `/api/v1/comments/${commentId}/vote-status`, method: 'GET', signal
+    },
+      );
+    }
+  
+
+
+
+export const getVoteStatusCommentQueryKey = (commentId?: number,) => {
+    return [
+    `/api/v1/comments/${commentId}/vote-status`
+    ] as const;
+    }
+
+    
+export const getVoteStatusCommentQueryOptions = <TData = Awaited<ReturnType<typeof voteStatusComment>>, TError = unknown>(commentId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof voteStatusComment>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getVoteStatusCommentQueryKey(commentId);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof voteStatusComment>>> = ({ signal }) => voteStatusComment(commentId, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(commentId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof voteStatusComment>>, TError, TData> & { queryKey: DataTag<QueryKey, TData> }
+}
+
+export type VoteStatusCommentQueryResult = NonNullable<Awaited<ReturnType<typeof voteStatusComment>>>
+export type VoteStatusCommentQueryError = unknown
+
+
+export function useVoteStatusComment<TData = Awaited<ReturnType<typeof voteStatusComment>>, TError = unknown>(
+ commentId: number, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof voteStatusComment>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof voteStatusComment>>,
+          TError,
+          Awaited<ReturnType<typeof voteStatusComment>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> }
+export function useVoteStatusComment<TData = Awaited<ReturnType<typeof voteStatusComment>>, TError = unknown>(
+ commentId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof voteStatusComment>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof voteStatusComment>>,
+          TError,
+          Awaited<ReturnType<typeof voteStatusComment>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> }
+export function useVoteStatusComment<TData = Awaited<ReturnType<typeof voteStatusComment>>, TError = unknown>(
+ commentId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof voteStatusComment>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> }
+/**
+ * @summary Check if current user has voted on a comment
+ */
+
+export function useVoteStatusComment<TData = Awaited<ReturnType<typeof voteStatusComment>>, TError = unknown>(
+ commentId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof voteStatusComment>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> } {
+
+  const queryOptions = getVoteStatusCommentQueryOptions(commentId,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+
+/**
+ * @summary Get vote count for a comment
+ */
+export const voteCountComment = (
+    commentId: number,
+ signal?: AbortSignal
+) => {
+      
+      
+      return customInstance<ApiResponseInteger>(
+      {url: `/api/v1/comments/${commentId}/vote-count`, method: 'GET', signal
+    },
+      );
+    }
+  
+
+
+
+export const getVoteCountCommentQueryKey = (commentId?: number,) => {
+    return [
+    `/api/v1/comments/${commentId}/vote-count`
+    ] as const;
+    }
+
+    
+export const getVoteCountCommentQueryOptions = <TData = Awaited<ReturnType<typeof voteCountComment>>, TError = unknown>(commentId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof voteCountComment>>, TError, TData>>, }
+) => {
+
+const {query: queryOptions} = options ?? {};
+
+  const queryKey =  queryOptions?.queryKey ?? getVoteCountCommentQueryKey(commentId);
+
+  
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof voteCountComment>>> = ({ signal }) => voteCountComment(commentId, signal);
+
+      
+
+      
+
+   return  { queryKey, queryFn, enabled: !!(commentId), ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof voteCountComment>>, TError, TData> & { queryKey: DataTag<QueryKey, TData> }
+}
+
+export type VoteCountCommentQueryResult = NonNullable<Awaited<ReturnType<typeof voteCountComment>>>
+export type VoteCountCommentQueryError = unknown
+
+
+export function useVoteCountComment<TData = Awaited<ReturnType<typeof voteCountComment>>, TError = unknown>(
+ commentId: number, options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof voteCountComment>>, TError, TData>> & Pick<
+        DefinedInitialDataOptions<
+          Awaited<ReturnType<typeof voteCountComment>>,
+          TError,
+          Awaited<ReturnType<typeof voteCountComment>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> }
+export function useVoteCountComment<TData = Awaited<ReturnType<typeof voteCountComment>>, TError = unknown>(
+ commentId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof voteCountComment>>, TError, TData>> & Pick<
+        UndefinedInitialDataOptions<
+          Awaited<ReturnType<typeof voteCountComment>>,
+          TError,
+          Awaited<ReturnType<typeof voteCountComment>>
+        > , 'initialData'
+      >, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> }
+export function useVoteCountComment<TData = Awaited<ReturnType<typeof voteCountComment>>, TError = unknown>(
+ commentId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof voteCountComment>>, TError, TData>>, }
+ , queryClient?: QueryClient
+  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> }
+/**
+ * @summary Get vote count for a comment
+ */
+
+export function useVoteCountComment<TData = Awaited<ReturnType<typeof voteCountComment>>, TError = unknown>(
+ commentId: number, options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof voteCountComment>>, TError, TData>>, }
+ , queryClient?: QueryClient 
+ ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> } {
+
+  const queryOptions = getVoteCountCommentQueryOptions(commentId,options)
+
+  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData> };
+
+  query.queryKey = queryOptions.queryKey ;
+
+  return query;
+}
+
+
+
+

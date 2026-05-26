@@ -14,10 +14,11 @@ import jakarta.persistence.UniqueConstraint
 @Table(
     name = "votes",
     uniqueConstraints = [
-        UniqueConstraint(name = "uk_vote_user_post", columnNames = ["user_id", "post_id"])
+        UniqueConstraint(name = "uk_vote_user_post_comment", columnNames = ["user_id", "post_id", "comment_id"])
     ],
     indexes = [
-        Index(name = "idx_votes_post_id", columnList = "post_id")
+        Index(name = "idx_votes_post_id", columnList = "post_id"),
+        Index(name = "idx_votes_comment_id", columnList = "comment_id")
     ]
 )
 class Vote(
@@ -28,6 +29,9 @@ class Vote(
     @Column(name = "user_id", nullable = false)
     val userId: Long,
 
-    @Column(name = "post_id", nullable = false)
-    val postId: Long
+    @Column(name = "post_id")
+    val postId: Long? = null,
+
+    @Column(name = "comment_id")
+    val commentId: Long? = null
 ) : BaseEntity()

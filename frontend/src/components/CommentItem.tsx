@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import type { CommentResponse } from '@/api/generated/model'
+import { VoteButton } from '@/components/VoteButton'
 
 interface CommentItemProps {
   comment: CommentResponse
@@ -34,10 +35,12 @@ export function CommentItem({ comment, currentUsername, isMod, onDelete }: Comme
 
   return (
     <div className="py-1" style={{ paddingLeft: `${comment.depth * 16}px` }}>
-      <div className="text-xs text-gray-500 mb-1">
+      <div className="text-xs text-gray-500 mb-1 flex items-center gap-1">
+        <VoteButton commentId={comment.id} />
         <Link to={`/user/${comment.authorUsername}`} className="text-gray-500 no-underline hover:underline">
           {comment.authorUsername}
         </Link>{' '}
+        <span>{comment.score} {comment.score === 1 ? 'point' : 'points'}</span>{' '}
         {timeAgo(comment.createdAt)}
         {canDelete && onDelete && (
           <>
