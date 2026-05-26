@@ -1,11 +1,17 @@
 import { useAuthStore } from '@/features/auth/store'
 import { useBanUser, useUnbanUser } from '@/features/moderation/hooks'
+import { useChangeRole } from '@/features/admin/hooks'
 import { Navigate } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { customInstance } from '@/api/client/axios-client'
 import type { ApiResponseListUserListItem, UserListItem } from '@/api/generated/model'
 
+const ROLES = ['ROLE_USER', 'ROLE_MODERATOR', 'ROLE_ADMIN'] as const
 const BAN_DURATIONS = [1, 6, 24, 72, 168] as const
+
+function roleLabel(role: string) {
+  return role.replace('ROLE_', '')
+}
 
 function banLabel(hours: number) {
   if (hours < 24) return `${hours}h`
@@ -40,6 +46,7 @@ export function ModPage() {
   const { data, isLoading, isError, error } = useModUsers()
   const banUser = useBanUser()
   const unbanUser = useUnbanUser()
+  const changeRole = useChangeRole()
 
   if (!token) {
     return <Navigate to="/login" replace />
@@ -47,9 +54,14 @@ export function ModPage() {
 
   const role = user?.role ?? ''
   const isMod = role === 'ROLE_MODERATOR' || role === 'ROLE_ADMIN'
+  const isAdmin = role === 'ROLE_ADMIN'
 
   if (!isMod) {
     return <div className="py-4 text-sm text-red-600">Access denied. Moderators only.</div>
+  }
+
+  const handleChangeRole = (userId: number, newRole: string) => {
+    changeRole.mutate({ id: userId, params: { role: newRole } })
   }
 
   const handleBan = (userId: number, durationHours: number) => {
@@ -66,6 +78,9 @@ export function ModPage() {
     <div className="py-4">
       <h1 className="text-base font-bold mb-3">Moderator Dashboard</h1>
 
+      {changeRole.isError && (
+        <p className="text-xs text-red-600 mb-2">Failed to change role.</p>
+      )}
       {banUser.isError && (
         <p className="text-xs text-red-600 mb-2">Failed to ban user.</p>
       )}
@@ -114,7 +129,19 @@ export function ModPage() {
                   </td>
                   <td className="py-1 pr-4 text-gray-500">{u.email}</td>
                   <td className="py-1 pr-4 text-gray-500 text-xs">{u.karma}</td>
-                  <td className="py-1 pr-4">{u.role.replace('ROLE_', '')}</td>
+                  <td className="py-1">
+                    <span className="font-medium">{roleLabel(u.role)}</span>
+                    {isAdmin &&
+                      ROLES.filter((r) => r !== u.role).map((r) => (
+                        <button
+                          key={r}
+                          onClick={() => handleChangeRole(u.id, r)}
+                          className="ml-2 text-xs text-[#ff6600] hover:underline cursor-pointer"
+                        >
+                          make {roleLabel(r).toLowerCase()}
+                        </button>
+                      ))}
+                  </td>
                   <td className="py-1">
                     {banned ? (
                       <button

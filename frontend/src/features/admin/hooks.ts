@@ -12,6 +12,7 @@ export function useChangeRole() {
     mutation: {
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ['/api/v1/admin/users'] })
+        queryClient.invalidateQueries({ queryKey: ['/api/v1/moderator/users'] })
       },
     },
   })
