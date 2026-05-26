@@ -1,5 +1,6 @@
-package com.project.manifesto.modules.tagging
+package com.project.manifesto.modules.tagging.service
 
+import com.project.manifesto.modules.tagging.dto.TaggingResponse
 import com.project.manifesto.modules.submit.entity.Post
 import org.slf4j.LoggerFactory
 import org.springframework.ai.chat.client.ChatClient

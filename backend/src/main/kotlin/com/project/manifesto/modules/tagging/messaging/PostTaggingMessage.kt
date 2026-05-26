@@ -1,4 +1,4 @@
-package com.project.manifesto.modules.submit.messaging
+package com.project.manifesto.modules.tagging.messaging
 
 data class PostTaggingMessage(
     val postId: Long,

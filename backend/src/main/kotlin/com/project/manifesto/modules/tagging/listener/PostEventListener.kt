@@ -1,7 +1,7 @@
-package com.project.manifesto.modules.submit.listener
+package com.project.manifesto.modules.tagging.listener
 
 import com.project.manifesto.modules.submit.event.PostCreatedEvent
-import com.project.manifesto.modules.submit.messaging.PostTaggingMessage
+import com.project.manifesto.modules.tagging.messaging.PostTaggingMessage
 import org.slf4j.LoggerFactory
 import org.springframework.amqp.rabbit.core.RabbitTemplate
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
