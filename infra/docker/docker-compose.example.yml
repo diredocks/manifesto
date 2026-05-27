@@ -6,9 +6,8 @@ services:
     container_name: manifesto-app
     ports:
       - "${SERVER_PORT:-8080}:8080"
-    env_file:
-      - ../../.env
     environment:
+      # Infrastructure (hostnames must match service names)
       - DB_URL=jdbc:postgresql://postgres:5432/manifesto
       - DB_USERNAME=manifesto
       - DB_PASSWORD=manifesto
@@ -16,6 +15,15 @@ services:
       - RABBITMQ_PORT=5672
       - RABBITMQ_USERNAME=guest
       - RABBITMQ_PASSWORD=guest
+      # Required — bring your own keys
+      # - DEEPSEEK_API_KEY=sk-your-key-here
+      # Optional — uncomment and customize as needed
+      # - ADMIN_USERNAME=admin
+      # - ADMIN_EMAIL=admin@manifesto.local
+      # - ADMIN_PASSWORD=admin
+      # - ADMIN_AUTO_CREATE=true
+      # - JWT_SECRET=change-me-to-a-secure-random-string-at-least-32-bytes
+      # - TAGGING_ENABLED=true
     depends_on:
       postgres:
         condition: service_healthy
@@ -30,8 +38,6 @@ services:
       POSTGRES_DB: manifesto
       POSTGRES_USER: manifesto
       POSTGRES_PASSWORD: manifesto
-    ports:
-      - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -44,9 +50,6 @@ services:
   rabbitmq:
     image: rabbitmq:4-management-alpine
     container_name: manifesto-rabbitmq
-    ports:
-      - "5673:5672"
-      - "15673:15672"
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq
     healthcheck:

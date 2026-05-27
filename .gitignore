@@ -4,6 +4,7 @@ Thumbs.db
 
 # Env
 .env
+docker-compose.yml
 *.log
 
 # Agents
