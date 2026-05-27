@@ -4,6 +4,7 @@ import { useChangeRole } from '@/features/admin/hooks'
 import { Navigate } from 'react-router-dom'
 import { useListUsers } from '@/api/generated/moderator/moderator'
 import type { UserListItem } from '@/api/generated/model'
+import { isFuture, formatDateTime } from '@/lib/date'
 
 const ROLES = ['ROLE_USER', 'ROLE_MODERATOR', 'ROLE_ADMIN'] as const
 const BAN_DURATIONS = [1, 6, 24, 72, 168] as const
@@ -19,12 +20,12 @@ function banLabel(hours: number) {
 
 function isBanned(bannedUntil?: string): boolean {
   if (!bannedUntil) return false
-  return new Date(bannedUntil).getTime() > Date.now()
+  return isFuture(bannedUntil)
 }
 
 function formatBanExpiry(bannedUntil?: string): string {
   if (!bannedUntil) return ''
-  return new Date(bannedUntil).toLocaleString()
+  return formatDateTime(bannedUntil)
 }
 
 export function ModPage() {

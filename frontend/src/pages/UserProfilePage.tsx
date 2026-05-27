@@ -1,5 +1,6 @@
 import { useParams, Link } from 'react-router-dom'
 import { useUserProfile } from '@/features/profile/hooks'
+import { formatDate } from '@/lib/date'
 
 export function UserProfilePage() {
   const { username } = useParams<{ username: string }>()
@@ -31,7 +32,7 @@ function UserInfo({ username }: { username: string }) {
   }
 
   const profile = data.data
-  const joined = new Date(profile.createdAt).toLocaleDateString()
+  const joined = formatDate(profile.createdAt)
 
   return (
     <div>

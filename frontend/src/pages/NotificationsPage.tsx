@@ -2,20 +2,7 @@ import { useSearchParams, Link } from 'react-router-dom'
 import { useGetNotifications } from '@/api/generated/notifications/notifications'
 import { useMarkNotificationRead } from '@/features/notifications/hooks'
 import type { NotificationResponse } from '@/api/generated/model/notificationResponse'
-
-function timeAgo(dateStr: string): string {
-  const now = Date.now()
-  const then = new Date(dateStr).getTime()
-  const diff = now - then
-  const minutes = Math.floor(diff / 60000)
-  const hours = Math.floor(diff / 3600000)
-  const days = Math.floor(diff / 86400000)
-
-  if (minutes < 60) return `${minutes}m ago`
-  if (hours < 24) return `${hours}h ago`
-  if (days < 30) return `${days}d ago`
-  return new Date(dateStr).toLocaleDateString()
-}
+import { timeAgo } from '@/lib/date'
 
 function getLinkTarget(n: NotificationResponse): string | null {
   if (n.relatedCommentId && n.relatedPostId) {

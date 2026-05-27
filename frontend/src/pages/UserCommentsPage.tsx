@@ -1,5 +1,6 @@
 import { useSearchParams, useParams, Link } from 'react-router-dom'
 import { useUserComments } from '@/features/profile/hooks'
+import { formatDate } from '@/lib/date'
 
 export function UserCommentsPage() {
   const { username } = useParams<{ username: string }>()
@@ -58,7 +59,7 @@ function UserComments({ username }: { username: string }) {
             {comment.content}
           </div>
           <div className="text-xs text-[#828282] mt-0.5">
-            {new Date(comment.createdAt).toLocaleDateString()}
+            {formatDate(comment.createdAt)}
           </div>
         </div>
       ))}

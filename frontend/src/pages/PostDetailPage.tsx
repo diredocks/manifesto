@@ -8,19 +8,7 @@ import { CommentForm } from '@/components/CommentForm'
 import { VoteButton } from '@/components/VoteButton'
 import { useAuthStore } from '@/features/auth/store'
 import { useDeleteOwnPost, useModDeletePost, useDeleteOwnComment, useModDeleteComment } from '@/features/moderation/hooks'
-
-function timeAgo(dateStr: string): string {
-  const now = Date.now()
-  const diff = now - new Date(dateStr).getTime()
-  const minutes = Math.floor(diff / 60000)
-  const hours = Math.floor(diff / 3600000)
-  const days = Math.floor(diff / 86400000)
-
-  if (minutes < 60) return `${minutes}m ago`
-  if (hours < 24) return `${hours}h ago`
-  if (days < 30) return `${days}d ago`
-  return new Date(dateStr).toLocaleDateString()
-}
+import { timeAgo } from '@/lib/date'
 
 export function PostDetailPage() {
   const { id } = useParams<{ id: string }>()
