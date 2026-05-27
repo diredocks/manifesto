@@ -1,5 +1,5 @@
 import { useSearchParams } from 'react-router-dom'
-import { useHotPosts } from '@/features/feed/hooks'
+import { useGetHot } from '@/api/generated/ranking/ranking'
 import { PostList } from '@/components/PostList'
 
 export function HomePage() {
@@ -7,7 +7,7 @@ export function HomePage() {
   const p = Number(searchParams.get('p') || '1')
   const apiPage = p - 1
 
-  const { data, isLoading, isError, error } = useHotPosts(apiPage)
+  const { data, isLoading, isError, error } = useGetHot({ page: apiPage, size: 20 })
   const posts = data?.data
   const hasMore = posts && posts.length >= 20
   const moreUrl = hasMore ? `/?p=${p + 1}` : undefined

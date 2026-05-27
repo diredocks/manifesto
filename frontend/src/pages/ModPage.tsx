@@ -52,11 +52,11 @@ export function ModPage() {
   }
 
   const handleBan = (userId: number, durationHours: number) => {
-    banUser.mutate({ id: userId, durationHours })
+    banUser.mutate({ id: userId, params: { durationHours } })
   }
 
   const handleUnban = (userId: number) => {
-    unbanUser.mutate(userId)
+    unbanUser.mutate({ id: userId })
   }
 
   const users = data?.data

@@ -1,5 +1,6 @@
 import { useSearchParams, Link } from 'react-router-dom'
-import { useNotifications, useMarkNotificationRead } from '@/features/notifications/hooks'
+import { useGetNotifications } from '@/api/generated/notifications/notifications'
+import { useMarkNotificationRead } from '@/features/notifications/hooks'
 import type { NotificationResponse } from '@/api/generated/model/notificationResponse'
 
 function timeAgo(dateStr: string): string {
@@ -62,7 +63,7 @@ export function NotificationsPage() {
   const p = Number(searchParams.get('p') || '1')
   const apiPage = p - 1
 
-  const { data, isLoading, isError, error } = useNotifications(apiPage)
+  const { data, isLoading, isError, error } = useGetNotifications({ page: apiPage, size: 20 })
   const notifications = data?.data?.content
   const hasMore = notifications && notifications.length >= 20
   const moreUrl = hasMore ? `/notifications?p=${p + 1}` : undefined

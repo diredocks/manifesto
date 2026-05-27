@@ -1,5 +1,5 @@
 import { useSearchParams } from 'react-router-dom'
-import { useNewPosts } from '@/features/feed/hooks'
+import { useGetNew } from '@/api/generated/ranking/ranking'
 import { PostList } from '@/components/PostList'
 
 export function NewPage() {
@@ -7,7 +7,7 @@ export function NewPage() {
   const p = Number(searchParams.get('p') || '1')
   const apiPage = p - 1
 
-  const { data, isLoading, isError, error } = useNewPosts(apiPage)
+  const { data, isLoading, isError, error } = useGetNew({ page: apiPage, size: 20 })
   const posts = data?.data
   const hasMore = posts && posts.length >= 20
   const moreUrl = hasMore ? `/new?p=${p + 1}` : undefined
