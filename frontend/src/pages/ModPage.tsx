@@ -2,9 +2,8 @@ import { useAuthStore } from '@/features/auth/store'
 import { useBanUser, useUnbanUser } from '@/features/moderation/hooks'
 import { useChangeRole } from '@/features/admin/hooks'
 import { Navigate } from 'react-router-dom'
-import { useQuery } from '@tanstack/react-query'
-import { customInstance } from '@/api/client/axios-client'
-import type { ApiResponseListUserListItem, UserListItem } from '@/api/generated/model'
+import { useListUsers } from '@/api/generated/moderator/moderator'
+import type { UserListItem } from '@/api/generated/model'
 
 const ROLES = ['ROLE_USER', 'ROLE_MODERATOR', 'ROLE_ADMIN'] as const
 const BAN_DURATIONS = [1, 6, 24, 72, 168] as const
@@ -28,22 +27,10 @@ function formatBanExpiry(bannedUntil?: string): string {
   return new Date(bannedUntil).toLocaleString()
 }
 
-function useModUsers() {
-  return useQuery({
-    queryKey: ['/api/v1/moderator/users'],
-    queryFn: ({ signal }) =>
-      customInstance<ApiResponseListUserListItem>({
-        url: '/api/v1/moderator/users',
-        method: 'GET',
-        signal,
-      }),
-  })
-}
-
 export function ModPage() {
   const user = useAuthStore((s) => s.user)
   const token = useAuthStore((s) => s.token)
-  const { data, isLoading, isError, error } = useModUsers()
+  const { data, isLoading, isError, error } = useListUsers()
   const banUser = useBanUser()
   const unbanUser = useUnbanUser()
   const changeRole = useChangeRole()
