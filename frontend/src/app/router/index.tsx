@@ -13,6 +13,7 @@ import { UserPostsPage } from '@/pages/UserPostsPage'
 import { UserCommentsPage } from '@/pages/UserCommentsPage'
 import { ModPage } from '@/pages/ModPage'
 import { NotificationsPage } from '@/pages/NotificationsPage'
+import { TagPostsPage } from '@/pages/TagPostsPage'
 import { NotFoundPage } from '@/pages/NotFoundPage'
 
 export function AppRouter() {
@@ -23,6 +24,7 @@ export function AppRouter() {
         <Route path="new" element={<NewPage />} />
         <Route path="ask" element={<AskPage />} />
         <Route path="item/:id" element={<PostDetailPage />} />
+        <Route path="tag/:tagName" element={<TagPostsPage />} />
         <Route path="user/:username" element={<UserProfilePage />} />
         <Route path="user/:username/posts" element={<UserPostsPage />} />
         <Route path="user/:username/comments" element={<UserCommentsPage />} />

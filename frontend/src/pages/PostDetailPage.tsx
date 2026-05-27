@@ -118,6 +118,19 @@ export function PostDetailPage() {
             </>
           )}
         </div>
+        {post.tags && post.tags.length > 0 && (
+          <div className="flex flex-wrap gap-1 mb-2">
+            {post.tags.map((tag) => (
+              <Link
+                key={tag}
+                to={`/tag/${encodeURIComponent(tag)}`}
+                className="text-xs px-1.5 py-0.5 bg-gray-200 text-gray-600 hover:bg-gray-300 no-underline"
+              >
+                {tag}
+              </Link>
+            ))}
+          </div>
+        )}
         {post.content && (
           <div className="text-sm mb-3 whitespace-pre-wrap">{post.content}</div>
         )}

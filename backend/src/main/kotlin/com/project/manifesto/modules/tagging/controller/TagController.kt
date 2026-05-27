@@ -5,6 +5,7 @@ import com.project.manifesto.modules.submit.dto.PostResponse
 import com.project.manifesto.modules.submit.service.PostService
 import com.project.manifesto.modules.tagging.service.TagService
 import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api/v1/tags")
+@Tag(name = "Tags", description = "Tag APIs")
 class TagController(
     private val tagService: TagService,
     private val postService: PostService,

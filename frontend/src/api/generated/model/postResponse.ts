@@ -17,4 +17,5 @@ export interface PostResponse {
   type: string;
   authorUsername: string;
   createdAt: string;
+  tags: string[];
 }
