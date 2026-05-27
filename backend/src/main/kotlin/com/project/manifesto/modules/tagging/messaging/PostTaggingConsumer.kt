@@ -2,6 +2,7 @@ package com.project.manifesto.modules.tagging.messaging
 
 import com.project.manifesto.modules.submit.repository.PostRepository
 import com.project.manifesto.modules.tagging.service.TagGenerationService
+import com.project.manifesto.modules.tagging.service.TagService
 import org.slf4j.LoggerFactory
 import org.springframework.amqp.rabbit.annotation.RabbitListener
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional
 class PostTaggingConsumer(
     private val postRepository: PostRepository,
     private val tagGenerationService: TagGenerationService,
+    private val tagService: TagService,
 ) {
     private val logger = LoggerFactory.getLogger(PostTaggingConsumer::class.java)
 
@@ -41,7 +43,7 @@ class PostTaggingConsumer(
             return
         }
 
-        postRepository.updateTags(message.postId, tags)
+        tagService.assignTags(message.postId, tags)
         logger.info("Tags updated for postId={}: {}", message.postId, tags)
     }
 }

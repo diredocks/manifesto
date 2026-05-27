@@ -7,6 +7,7 @@ import com.project.manifesto.modules.submit.entity.Post
 import com.project.manifesto.modules.submit.entity.PostType
 import com.project.manifesto.modules.submit.event.PostCreatedEvent
 import com.project.manifesto.modules.submit.repository.PostRepository
+import com.project.manifesto.modules.tagging.service.TagService
 import com.project.manifesto.modules.user.repository.UserRepository
 import jakarta.persistence.EntityNotFoundException
 import org.springframework.context.ApplicationEventPublisher
@@ -20,6 +21,7 @@ class PostService(
     private val postRepository: PostRepository,
     private val userRepository: UserRepository,
     private val eventPublisher: ApplicationEventPublisher,
+    private val tagService: TagService,
 ) {
     @Transactional
     fun createPost(
@@ -180,13 +182,14 @@ class PostService(
             userRepository
                 .findById(post.authorId)
                 .orElse(null)
+        val tags = tagService.getTagsForPost(post.id)
         return PostResponse(
             id = post.id,
             title = post.title,
             url = post.url,
             content = post.content,
             summary = post.summary,
-            tags = post.tags,
+            tags = tags,
             score = post.score,
             hotScore = post.hotScore,
             commentCount = post.commentCount,
@@ -201,13 +204,14 @@ class PostService(
             userRepository
                 .findById(post.authorId)
                 .orElse(null)
+        val tags = tagService.getTagsForPost(post.id)
         return PostDetailResponse(
             id = post.id,
             title = post.title,
             url = post.url,
             content = post.content,
             summary = post.summary,
-            tags = post.tags,
+            tags = tags,
             score = post.score,
             hotScore = post.hotScore,
             commentCount = post.commentCount,

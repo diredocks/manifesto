@@ -8,11 +8,11 @@ data class PostResponse(
     val url: String?,
     val content: String?,
     val summary: String?,
-    val tags: List<String>?,
     val score: Int,
     val hotScore: Double,
     val commentCount: Int,
     val type: String,
     val authorUsername: String,
     val createdAt: Instant,
+    val tags: List<String> = emptyList(),
 )

@@ -8,7 +8,6 @@ data class PostDetailResponse(
     val url: String?,
     val content: String?,
     val summary: String?,
-    val tags: List<String>?,
     val score: Int,
     val hotScore: Double,
     val commentCount: Int,
@@ -16,4 +15,5 @@ data class PostDetailResponse(
     val authorId: Long,
     val authorUsername: String,
     val createdAt: Instant,
+    val tags: List<String> = emptyList(),
 )

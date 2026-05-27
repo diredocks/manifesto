@@ -34,13 +34,6 @@ interface PostRepository : JpaRepository<Post, Long> {
     ): Page<Post>
 
     @Modifying
-    @Query("UPDATE Post p SET p.tags = :tags WHERE p.id = :postId")
-    fun updateTags(
-        @Param("postId") postId: Long,
-        @Param("tags") tags: List<String>,
-    )
-
-    @Modifying
     @Query("UPDATE Post p SET p.commentCount = p.commentCount + 1 WHERE p.id = :postId")
     fun incrementCommentCount(
         @Param("postId") postId: Long,

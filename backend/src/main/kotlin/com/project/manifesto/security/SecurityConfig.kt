@@ -60,6 +60,8 @@ class SecurityConfig(
                     .permitAll()
                     .requestMatchers(HttpMethod.GET, "/api/v1/comments/**")
                     .permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/v1/tags/**")
+                    .permitAll()
                     .requestMatchers(HttpMethod.GET, "/api/v1/ranking/**")
                     .permitAll()
                     .anyRequest()
