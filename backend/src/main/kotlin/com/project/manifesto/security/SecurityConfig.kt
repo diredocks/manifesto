@@ -16,6 +16,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
+import org.springframework.security.web.util.matcher.NegatedRequestMatcher
+import org.springframework.security.web.util.matcher.RequestMatcher
 
 @Configuration
 @EnableWebSecurity
@@ -42,6 +44,8 @@ class SecurityConfig(
 
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
+        val apiRequestMatcher = RequestMatcher { request -> request.requestURI.startsWith("/api/") }
+
         http
             .csrf { it.disable() }
             .sessionManagement { it.sessionCreationPolicy(SessionCreationPolicy.STATELESS) }
@@ -63,6 +67,11 @@ class SecurityConfig(
                     .requestMatchers(HttpMethod.GET, "/api/v1/tags/**")
                     .permitAll()
                     .requestMatchers(HttpMethod.GET, "/api/v1/ranking/**")
+                    .permitAll()
+                    .requestMatchers("/", "/index.html", "/assets/**", "/favicon.ico")
+                    .permitAll()
+                    // SPA routing: permit non-API paths so React Router can handle them
+                    .requestMatchers(NegatedRequestMatcher(apiRequestMatcher))
                     .permitAll()
                     .anyRequest()
                     .authenticated()

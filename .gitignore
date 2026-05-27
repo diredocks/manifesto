@@ -5,3 +5,6 @@ Thumbs.db
 # Env
 .env
 *.log
+
+# Agents
+PLAN.md

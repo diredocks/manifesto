@@ -1,0 +1,12 @@
+node_modules
+.gradle
+build
+dist
+.git
+.idea
+*.log
+.env
+.env.*
+!.env.example
+*.tmp
+.DS_Store
